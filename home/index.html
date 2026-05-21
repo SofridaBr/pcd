@@ -662,7 +662,7 @@
         <p class="form-title">Olá, aluno! </p>
         <p class="form-sub">Entre com seu e-mail e senha para continuar aprendendo</p>
 
-        <form class="form" onsubmit="return false;">
+        <form class="form" id="form-login-aluno">
           <div>
             <label class="label" for="aluno-email">
               <i class="ti ti-mail" aria-hidden="true" style="color:#E53935"></i> E-mail
@@ -703,14 +703,16 @@
         <i class="ti ti-login" aria-hidden="true"></i> Entrar e aprender!
       </button>
 
-      <div class="divider"><span>ainda não tem conta?</span></div>
+      <div class="divider">
+        <span>ainda não tem conta?</span>
+      </div>
 
       <button type="button" class="btn-secondary">
         <i class="ti ti-user-plus" aria-hidden="true"></i> Criar conta de aluno
       </button>
+
       </form>
       </div>
-
 
       <!-- VLibras -->
       <div vw class="enabled">
@@ -762,7 +764,7 @@
         <p class="form-title">Área do educador</p>
         <p class="form-sub">Acesse os perfis e o progresso dos seus alunos</p>
 
-        <form class="form" onsubmit="return false;">
+        <form class="form">
           <div>
             <label class="label" for="resp-tipo">
               <i class="ti ti-id-badge" aria-hidden="true" style="color:#E53935"></i> Tipo de acesso
@@ -815,103 +817,8 @@
     </section>
   </main>
 
-  <script>
-
-    function switchTab(tab) {
-      document.getElementById('panel-aluno').classList.toggle('active', tab === 'aluno');
-      document.getElementById('panel-resp').classList.toggle('active', tab === 'resp');
-      document.getElementById('tab-aluno').classList.toggle('active', tab === 'aluno');
-      document.getElementById('tab-resp').classList.toggle('active', tab === 'resp');
-      document.getElementById('tab-aluno').setAttribute('aria-selected', tab === 'aluno');
-      document.getElementById('tab-resp').setAttribute('aria-selected', tab === 'resp');
-    }
-
-    function toggleChip(el) {
-      el.classList.toggle('sel');
-    }
-
-    /* MENU ACESSIBILIDADE */
-
-    const menu = document.getElementById("menuAcessibilidade");
-
-    function toggleMenu() {
-      menu.classList.toggle("active");
-    }
-
-    /* FONTE */
-
-    let fontSize = 16;
-
-    function increaseFont() {
-      fontSize += 2;
-      document.body.style.fontSize = fontSize + "px";
-    }
-
-    function decreaseFont() {
-      fontSize -= 2;
-      document.body.style.fontSize = fontSize + "px";
-    }
-
-    /* CONTRASTE */
-
-    function toggleContrast() {
-      document.body.classList.toggle("high-contrast");
-    }
-
-    /* DISLEXIA */
-
-    function toggleDyslexia() {
-      document.body.classList.toggle("dyslexia");
-    }
-
-    /* ZOOM */
-
-    let zoom = 1;
-
-    function zoomPage() {
-      zoom += 0.1;
-      document.body.style.zoom = zoom;
-    }
-
-    /* LEITOR DE TEXTO */
-
-    function speakText() {
-
-      const text = document.body.innerText;
-
-      const speech = new SpeechSynthesisUtterance(text);
-
-      speech.lang = "pt-BR";
-
-      window.speechSynthesis.speak(speech);
-    }
-
-    /* MODO TDAH */
-
-    function toggleTDAH() {
-      document.body.classList.toggle("tdah-mode");
-    }
-
-    /* GUIA DE LEITURA */
-
-    const guide = document.getElementById("reading-guide");
-
-    function toggleGuide() {
-
-      if (guide.style.display === "block") {
-        guide.style.display = "none";
-      } else {
-        guide.style.display = "block";
-      }
-    }
-
-    document.addEventListener("mousemove", (e) => {
-
-      guide.style.top = e.clientY + "px";
-
-    });
-
-  </script>
+  
+  <script src="script.js"></script>
 
 </body>
 
