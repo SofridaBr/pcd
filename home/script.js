@@ -41,6 +41,8 @@ formLoginAluno.addEventListener("submit", async (e) => {
 
     const senha = document.getElementById("aluno-senha").value;
 
+    console.log("ENVIANDO:", email, senha);
+
     try {
 
         const resposta = await fetch("http://localhost:3000/login", {
@@ -77,6 +79,7 @@ formLoginAluno.addEventListener("submit", async (e) => {
     } catch (erro) {
 
         alert("Erro ao conectar ao servidor");
+
 
     }
 
@@ -156,5 +159,33 @@ function toggleTDAH() {
 
 /* GUIA DE LEITURA */
 
+const formLoginProf = document.getElementById("form-login-prof");
 
+formLoginProf.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("resp-email").value;
+    const senha = document.getElementById("resp-senha").value;
+
+    try {
+        const resposta = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok) {
+            alert("Login realizado!");
+            localStorage.setItem("usuario", JSON.stringify(dados.usuario));
+            window.location.href = "painel.html";
+        } else {
+            alert(dados.mensagem);
+        }
+
+    } catch (erro) {
+        alert("Erro ao conectar ao servidor");
+    }
+});
 

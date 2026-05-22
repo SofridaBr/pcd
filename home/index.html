@@ -663,12 +663,14 @@
         <p class="form-sub">Entre com seu e-mail e senha para continuar aprendendo</p>
 
         <form class="form" id="form-login-aluno">
+
           <div>
             <label class="label" for="aluno-email">
-              <i class="ti ti-mail" aria-hidden="true" style="color:#E53935"></i> E-mail
+              <i class="ti ti-mail" style="color:#E53935"></i> E-mail
             </label>
+
             <div class="input-wrap">
-              <i class="ti ti-mail field-icon" aria-hidden="true"></i>
+              <i class="ti ti-mail field-icon"></i>
               <input class="ei-input" id="aluno-email" type="email" placeholder="seuemail@escola.com"
                 autocomplete="email" />
             </div>
@@ -676,10 +678,11 @@
 
           <div>
             <label class="label" for="aluno-senha">
-              <i class="ti ti-lock" aria-hidden="true" style="color:#2E7D32"></i> Senha
+              <i class="ti ti-lock" style="color:#2E7D32"></i> Senha
             </label>
+
             <div class="input-wrap">
-              <i class="ti ti-lock field-icon" aria-hidden="true"></i>
+              <i class="ti ti-lock field-icon"></i>
               <input class="ei-input" id="aluno-senha" type="password" placeholder="••••••••"
                 autocomplete="current-password" />
             </div>
@@ -687,9 +690,10 @@
 
           <div>
             <div class="label">
-              <i class="ti ti-accessibility" aria-hidden="true" style="color:#6A1B9A"></i> Tipo de necessidade
+              <i class="ti ti-accessibility" style="color:#6A1B9A"></i> Tipo de necessidade
             </div>
-            <div class="pcd-row" role="group" aria-label="Selecione o tipo de necessidade">
+
+            <div class="pcd-row" role="group">
               <button type="button" class="pcd-chip chip-red" onclick="toggleChip(this)">Visual</button>
               <button type="button" class="pcd-chip chip-green" onclick="toggleChip(this)">Auditiva</button>
               <button type="button" class="pcd-chip chip-purple" onclick="toggleChip(this)">Cognitiva</button>
@@ -697,21 +701,21 @@
               <button type="button" class="pcd-chip chip-pink" onclick="toggleChip(this)">Outro</button>
             </div>
           </div>
-      </div>
 
-      <button type="submit" class="btn-primary">
-        <i class="ti ti-login" aria-hidden="true"></i> Entrar e aprender!
-      </button>
+          <button type="submit" class="btn-primary">
+            <i class="ti ti-login"></i> Entrar e aprender!
+          </button>
 
-      <div class="divider">
-        <span>ainda não tem conta?</span>
-      </div>
+          <div class="divider">
+            <span>ainda não tem conta?</span>
+          </div>
 
-      <button type="button" class="btn-secondary">
-        <i class="ti ti-user-plus" aria-hidden="true"></i> Criar conta de aluno
-      </button>
+          <button type="button" class="btn-secondary">
+            <i class="ti ti-user-plus"></i> Criar conta de aluno
+          </button>
 
-      </form>
+        
+        </form>
       </div>
 
       <!-- VLibras -->
@@ -764,7 +768,7 @@
         <p class="form-title">Área do educador</p>
         <p class="form-sub">Acesse os perfis e o progresso dos seus alunos</p>
 
-        <form class="form">
+        <form class="form" id="form-login-prof">
           <div>
             <label class="label" for="resp-tipo">
               <i class="ti ti-id-badge" aria-hidden="true" style="color:#E53935"></i> Tipo de acesso
@@ -817,7 +821,7 @@
     </section>
   </main>
 
-  
+
   <script src="script.js"></script>
 
 </body>
