@@ -79,7 +79,7 @@ formLoginAluno.addEventListener("submit", async (e) => {
     } catch (erro) {
 
         alert("Erro ao conectar ao servidor");
-
+        
 
     }
 
@@ -179,7 +179,7 @@ formLoginProf.addEventListener("submit", async (e) => {
         if (resposta.ok) {
             alert("Login realizado!");
             localStorage.setItem("usuario", JSON.stringify(dados.usuario));
-            window.location.href = "painel.html";
+            window.location.href = "painel-prof.html";
         } else {
             alert(dados.mensagem);
         }

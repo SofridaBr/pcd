@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Educador – EducaInclusiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #F0F6FF;
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: #0D47A1;
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #FFD600;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: #FFD600;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .logo-text {
+      font-family: 'Fredoka One', cursive;
+      color: #fff;
+      font-size: 26px;
+    }
+
+    .logo-text span {
+      color: #FFD600;
+    }
+
+    .btn-sair {
+      background: #E53935;
+      color: #fff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-sair:hover {
+      background: #B71C1C;
+    }
+
+    /* ── Hero card ── */
+    .hero {
+      background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+      margin: 28px 40px 0;
+      border-radius: 24px;
+      padding: 32px 36px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      box-shadow: 0 8px 32px rgba(21, 101, 192, 0.18);
+    }
+
+    .hero-avatar {
+      width: 72px;
+      height: 72px;
+      background: #FFD600;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .hero-info {
+      flex: 1;
+    }
+
+    .hero-nome {
+      font-family: 'Fredoka One', cursive;
+      color: #fff;
+      font-size: 28px;
+    }
+
+    .hero-tipo {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFD600;
+      color: #0D47A1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .stat-num {
+      font-family: 'Fredoka One', cursive;
+      color: #FFD600;
+      font-size: 28px;
+    }
+
+    .stat-label {
+      color: #BBDEFB;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Content ── */
+    .content {
+      padding: 28px 40px 40px;
+    }
+
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      color: #1565C0;
+      font-size: 22px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Search / filter ── */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #1565C0;
+      font-size: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 11px 11px 11px 42px;
+      border: 2px solid #BBDEFB;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: #1565C0;
+      background: #fff;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #1565C0;
+    }
+
+    .filter-select {
+      padding: 11px 16px;
+      border: 2px solid #BBDEFB;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: #1565C0;
+      background: #fff;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .aluno-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 2px 16px rgba(21, 101, 192, 0.08);
+      border: 2px solid #E3F2FD;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .aluno-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(21, 101, 192, 0.15);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .av-blue {
+      background: #E3F2FD;
+    }
+
+    .av-green {
+      background: #E8F5E9;
+    }
+
+    .av-purple {
+      background: #F3E5F5;
+    }
+
+    .av-red {
+      background: #FFEBEE;
+    }
+
+    .card-nome {
+      font-weight: 800;
+      color: #1565C0;
+      font-size: 16px;
+    }
+
+    .card-email {
+      color: #90A4AE;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    /* Condição badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .badge-nenhuma {
+      background: #E3F2FD;
+      color: #1565C0;
+    }
+
+    .badge-visual {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+
+    .badge-auditiva {
+      background: #E8F5E9;
+      color: #1B5E20;
+    }
+
+    .badge-cognitiva {
+      background: #F3E5F5;
+      color: #4A148C;
+    }
+
+    .badge-fisica {
+      background: #EFEBE9;
+      color: #3E2723;
+    }
+
+    .badge-outro {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+
+    /* Barra de progresso */
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1565C0;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #E3F2FD;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1565C0, #42A5F5);
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
+
+    /* Pontos e nível */
+    .card-stats {
+      display: flex;
+      gap: 10px;
+    }
+
+    .mini-stat {
+      flex: 1;
+      background: #F0F6FF;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .mini-num {
+      font-family: 'Fredoka One', cursive;
+      color: #1565C0;
+      font-size: 20px;
+    }
+
+    .mini-label {
+      color: #90A4AE;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #90A4AE;
+    }
+
+    .empty i {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .empty p {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #1565C0;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* ── Modal ── */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-family: 'Fredoka One', cursive;
+      color: #1565C0;
+      font-size: 22px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #90A4AE;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 11px 13px;
+      border: 2px solid #BBDEFB;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: #1565C0;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: #1565C0;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.error {
+      display: block;
+      background: #FFEBEE;
+      color: #C62828;
+    }
+
+    .alert.success {
+      display: block;
+      background: #E8F5E9;
+      color: #1B5E20;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      background: #1565C0;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #0D47A1;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 13px;
+      background: #E3F2FD;
+      color: #1565C0;
+      border: 2px solid #BBDEFB;
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #BBDEFB;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        margin: 16px;
+        flex-direction: column;
+      }
+
+      .hero-stats {
+        flex-wrap: wrap;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .topbar {
+        padding: 14px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-icon">🌟</div>
+      <div class="logo-text">Educa<span>Inclusiva</span></div>
+    </div>
+    <button class="btn-sair" onclick="sair()">
+      <i class="ti ti-logout"></i> Sair
+    </button>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-avatar" id="hero-avatar">👩‍🏫</div>
+    <div class="hero-info">
+      <div class="hero-nome" id="hero-nome">Carregando...</div>
+      <div class="hero-tipo" id="hero-tipo">
+        <i class="ti ti-id-badge"></i> <span id="tipo-texto">—</span>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Alunos</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-media">0%</div>
+        <div class="stat-label">Progresso médio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="section-title">
+      <i class="ti ti-users" style="color:#1565C0"></i> Meus Alunos
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="ti ti-search"></i>
+        <input class="search-input" id="busca" type="text" placeholder="Buscar aluno..." oninput="filtrar()" />
+      </div>
+      <select class="filter-select" id="filtro-condicao" onchange="filtrar()">
+        <option value="">Todas as condições</option>
+        <option value="Nenhuma">Sem condição</option>
+        <option value="Visual">Visual</option>
+        <option value="Auditiva">Auditiva</option>
+        <option value="Cognitiva">Cognitiva</option>
+        <option value="Física">Física</option>
+        <option value="Outro">Outro</option>
+      </select>
+      <button class="btn-primary" onclick="abrirModal()" style="width: auto; padding: 11px 20px;">
+        <i class="ti ti-user-plus"></i> Adicionar Aluno
+      </button>
+    </div>
+
+    <div id="cards-container" class="cards-grid">
+      <div class="loading">Carregando alunos... ⏳</div>
+    </div>
+
+    <!-- Modal Adicionar Aluno -->
+    <div class="modal" id="modalAdicionar">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Adicionar Aluno</h2>
+          <button class="modal-close" onclick="fecharModal()">✕</button>
+        </div>
+        <div id="alerta" class="alert"></div>
+        <input class="modal-input" id="emailAluno" type="email" placeholder="Email do aluno" />
+        <div class="modal-buttons">
+          <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+          <button class="btn-primary" onclick="confirmarAdicionar()">Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="painel-prof.js"></script>
+</body>
+
+</html>
