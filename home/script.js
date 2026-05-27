@@ -1,17 +1,13 @@
-
-
 const menu = document.getElementById("menuAcessibilidade");
 
 function toggleMenu() {
     menu.classList.toggle("active");
 }
 
-/* GUIA */
-
+/* GUIA DE LEITURA */
 const guide = document.getElementById("reading-guide");
 
 function toggleGuide() {
-
     if (guide.style.display === "block") {
         guide.style.display = "none";
     } else {
@@ -20,73 +16,56 @@ function toggleGuide() {
 }
 
 document.addEventListener("mousemove", (e) => {
-
     guide.style.top = e.clientY + "px";
-
 });
 
-
+/* ── LOGIN ALUNO ── */
 const formLoginAluno = document.getElementById("form-login-aluno");
 
-console.log("SCRIPT FUNCIONANDO");
-console.log(formLoginAluno);
-
 formLoginAluno.addEventListener("submit", async (e) => {
-
     e.preventDefault();
 
-    console.log("CLICOU NO BOTÃO");
-
     const email = document.getElementById("aluno-email").value;
-
     const senha = document.getElementById("aluno-senha").value;
 
-    console.log("ENVIANDO:", email, senha);
+    // Pega os chips selecionados
+    const chipsSelecionados = [...document.querySelectorAll(".pcd-chip.sel")]
+        .map(chip => chip.textContent.trim());
+    const condicao = chipsSelecionados.length > 0 ? chipsSelecionados[0] : "Nenhuma";
 
     try {
-
         const resposta = await fetch("http://localhost:3000/login", {
-
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                email,
-                senha
-            })
-
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
         });
 
         const dados = await resposta.json();
 
         if (resposta.ok) {
+            // Salva o usuario com a condição selecionada
+            const usuario = { ...dados.usuario, condicao };
+            localStorage.setItem("usuario", JSON.stringify(usuario));
 
-            alert("Login realizado!");
-
-            localStorage.setItem("usuario", JSON.stringify(dados.usuario));
+            // Atualiza a condição no servidor também
+            if (condicao !== "Nenhuma") {
+                await fetch(`http://localhost:3000/atualizar-condicao`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: dados.usuario.id, condicao })
+                }).catch(() => { }); // silencia erro
+            }
 
             window.location.href = "painel.html";
-
         } else {
-
             alert(dados.mensagem);
-
         }
-
     } catch (erro) {
-
         alert("Erro ao conectar ao servidor");
-        
-
     }
-
 });
 
-
-
+/* ── SWITCH TABS ── */
 function switchTab(tab) {
     document.getElementById('panel-aluno').classList.toggle('active', tab === 'aluno');
     document.getElementById('panel-resp').classList.toggle('active', tab === 'resp');
@@ -97,14 +76,64 @@ function switchTab(tab) {
 }
 
 function toggleChip(el) {
-    el.classList.toggle('sel');
+    // Só permite 1 chip selecionado por vez
+    document.querySelectorAll(".pcd-chip").forEach(c => {
+        if (c !== el) c.classList.remove("sel");
+    });
+    el.classList.toggle("sel");
 }
 
-/* MENU ACESSIBILIDADE */
+/* ── LOGIN PROFESSOR / RESPONSÁVEL / COORDENADOR / TERAPEUTA ── */
+const formLoginProf = document.getElementById("form-login-prof");
 
+formLoginProf.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-/* FONTE */
+    const email = document.getElementById("resp-email").value;
+    const senha = document.getElementById("resp-senha").value;
+    const tipoSelect = document.getElementById("resp-tipo").value;
 
+    // Mapeia o texto do select para o tipo interno
+    const tipoMap = {
+        "Professor(a)": "professor",
+        "Responsável / Familiar": "responsavel",
+        "Coordenador(a)": "coordenador",
+        "Terapeuta / Especialista": "terapeuta"
+    };
+
+    // Redirecionamento por tipo
+    const redirecionaMap = {
+        "professor": "painel-prof.html",
+        "responsavel": "painel-responsavel.html",
+        "coordenador": "painel-coordenador.html",
+        "terapeuta": "painel-prof.html" // terapeuta usa painel similar ao professor
+    };
+
+    try {
+        const resposta = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok) {
+            const tipoInterno = tipoMap[tipoSelect] || dados.usuario.tipo;
+            const usuario = { ...dados.usuario, tipo: tipoInterno };
+            localStorage.setItem("usuario", JSON.stringify(usuario));
+
+            const destino = redirecionaMap[tipoInterno] || "painel-prof.html";
+            window.location.href = destino;
+        } else {
+            alert(dados.mensagem);
+        }
+    } catch (erro) {
+        alert("Erro ao conectar ao servidor");
+    }
+});
+
+/* ── ACESSIBILIDADE ── */
 let fontSize = 16;
 
 function increaseFont() {
@@ -117,19 +146,13 @@ function decreaseFont() {
     document.body.style.fontSize = fontSize + "px";
 }
 
-/* CONTRASTE */
-
 function toggleContrast() {
     document.body.classList.toggle("high-contrast");
 }
 
-/* DISLEXIA */
-
 function toggleDyslexia() {
     document.body.classList.toggle("dyslexia");
 }
-
-/* ZOOM */
 
 let zoom = 1;
 
@@ -138,54 +161,13 @@ function zoomPage() {
     document.body.style.zoom = zoom;
 }
 
-/* LEITOR DE TEXTO */
-
 function speakText() {
-
     const text = document.body.innerText;
-
     const speech = new SpeechSynthesisUtterance(text);
-
     speech.lang = "pt-BR";
-
     window.speechSynthesis.speak(speech);
 }
-
-/* MODO TDAH */
 
 function toggleTDAH() {
     document.body.classList.toggle("tdah-mode");
 }
-
-/* GUIA DE LEITURA */
-
-const formLoginProf = document.getElementById("form-login-prof");
-
-formLoginProf.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("resp-email").value;
-    const senha = document.getElementById("resp-senha").value;
-
-    try {
-        const resposta = await fetch("http://localhost:3000/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, senha })
-        });
-
-        const dados = await resposta.json();
-
-        if (resposta.ok) {
-            alert("Login realizado!");
-            localStorage.setItem("usuario", JSON.stringify(dados.usuario));
-            window.location.href = "painel-prof.html";
-        } else {
-            alert(dados.mensagem);
-        }
-
-    } catch (erro) {
-        alert("Erro ao conectar ao servidor");
-    }
-});
-

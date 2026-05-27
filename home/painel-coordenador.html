@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel do Responsável – EducaInclusiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Nunito', sans-serif; background: #F0F6FF; min-height: 100vh; }
+
+        .topbar {
+            background: #0D47A1; padding: 14px 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 3px solid #FFD600;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width:44px;height:44px;background:#FFD600;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px; }
+        .logo-text { font-family:'Fredoka One',cursive;color:#fff;font-size:26px; }
+        .logo-text span { color:#FFD600; }
+        .btn-sair { background:#E53935;color:#fff;border:none;padding:9px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.2s; }
+        .btn-sair:hover { background:#B71C1C; }
+
+        /* Hero responsável */
+        .hero {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            margin: 28px 40px 0; border-radius: 24px;
+            padding: 32px 36px; display: flex; align-items: center; gap: 24px;
+            box-shadow: 0 8px 32px rgba(46,125,50,0.2);
+        }
+        .hero-avatar { width:72px;height:72px;background:#FFD600;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0; }
+        .hero-info { flex:1; }
+        .hero-nome { font-family:'Fredoka One',cursive;color:#fff;font-size:26px; }
+        .hero-badge { display:inline-flex;align-items:center;gap:6px;background:#FFD600;color:#1B5E20;font-weight:800;font-size:13px;padding:4px 14px;border-radius:20px;margin-top:6px; }
+        .hero-stats { display:flex;gap:16px;flex-wrap:wrap; }
+        .stat-box { background:rgba(255,255,255,0.12);border-radius:16px;padding:16px 22px;text-align:center;min-width:88px; }
+        .stat-num { font-family:'Fredoka One',cursive;color:#FFD600;font-size:26px; }
+        .stat-label { color:#C8E6C9;font-size:12px;font-weight:600;margin-top:4px; }
+
+        .content { padding: 28px 40px 40px; }
+        .section-title { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px;margin-bottom:18px;display:flex;align-items:center;gap:10px; }
+
+        /* Toolbar de busca */
+        .toolbar { display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap; }
+        .search-wrap { position:relative;flex:1;min-width:200px; }
+        .search-wrap i { position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#1565C0;font-size:20px; }
+        .search-input { width:100%;padding:11px 11px 11px 42px;border:2px solid #BBDEFB;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;color:#1565C0;background:#fff;outline:none; }
+
+        /* Card do filho (destaque) */
+        .filho-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 4px 24px rgba(21,101,192,0.10);
+            border: 2px solid #E3F2FD;
+            margin-bottom: 24px;
+            transition: transform 0.2s;
+        }
+        .filho-card:hover { transform: translateY(-3px); }
+
+        .filho-top { display:flex;align-items:center;gap:16px;margin-bottom:20px; }
+        .filho-avatar { width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;background:#E3F2FD; }
+        .filho-nome { font-weight:800;color:#1565C0;font-size:18px; }
+        .filho-email { color:#90A4AE;font-size:13px;margin-top:3px; }
+
+        /* Badge condição */
+        .badge {
+            display:inline-flex;align-items:center;gap:5px;
+            padding:5px 14px;border-radius:20px;
+            font-size:12px;font-weight:700;margin-bottom:18px;
+        }
+        .badge-nenhuma  { background:#E3F2FD;color:#1565C0; }
+        .badge-visual   { background:#FFEBEE;color:#C62828; }
+        .badge-auditiva { background:#E8F5E9;color:#1B5E20; }
+        .badge-cognitiva{ background:#F3E5F5;color:#4A148C; }
+        .badge-fisica   { background:#EFEBE9;color:#3E2723; }
+        .badge-outro    { background:#FFF3E0;color:#E65100; }
+
+        /* Progresso */
+        .progress-label { display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#1565C0;margin-bottom:8px; }
+        .progress-bar { width:100%;height:14px;background:#E3F2FD;border-radius:10px;overflow:hidden;margin-bottom:16px; }
+        .progress-fill { height:100%;background:linear-gradient(90deg,#1565C0,#42A5F5);border-radius:10px;transition:width 1.2s ease; }
+
+        /* Stats mini */
+        .mini-stats { display:flex;gap:12px;flex-wrap:wrap; }
+        .mini-stat { flex:1;min-width:110px;background:#F0F6FF;border-radius:14px;padding:14px;text-align:center; }
+        .mini-num { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px; }
+        .mini-label { color:#90A4AE;font-size:11px;font-weight:600;margin-top:3px; }
+
+        /* Escala de autismo */
+        .autism-section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 2px 16px rgba(21,101,192,0.07);
+            border: 2px solid #E3F2FD;
+            margin-top: 20px;
+        }
+        .autism-title { font-weight:800;color:#1565C0;font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
+
+        .autism-scale { display:flex;gap:0;border-radius:14px;overflow:hidden;margin-bottom:12px; }
+        .scale-seg {
+            flex:1; padding:12px 8px; text-align:center;
+            font-weight:800; font-size:13px; cursor:pointer;
+            transition: filter 0.2s;
+            position: relative;
+        }
+        .scale-seg.ativo::after {
+            content: "▼";
+            position:absolute; bottom:-18px; left:50%; transform:translateX(-50%);
+            font-size:16px; color:#1565C0;
+        }
+        .scale-0  { background:#E8F5E9;color:#1B5E20; }
+        .scale-1  { background:#FFF9C4;color:#F57F17; }
+        .scale-2  { background:#FFEBEE;color:#C62828; }
+
+        .autism-desc {
+            background: #F0F6FF; border-radius: 12px; padding: 14px 16px;
+            color: #1565C0; font-size: 13px; line-height: 1.6; margin-top: 20px;
+        }
+        .autism-desc strong { display:block;font-size:15px;margin-bottom:4px; }
+
+        /* Avisos / comunicados */
+        .aviso-card {
+            background:#fff;border-radius:16px;padding:18px;
+            box-shadow:0 2px 12px rgba(21,101,192,0.07);
+            border-left:5px solid #1565C0;
+            margin-bottom:12px;
+        }
+        .aviso-card.warning { border-left-color:#FF8F00; }
+        .aviso-card.success { border-left-color:#2E7D32; }
+        .aviso-topo { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
+        .aviso-titulo { font-weight:800;color:#1565C0;font-size:14px; }
+        .aviso-data { color:#90A4AE;font-size:12px; }
+        .aviso-texto { color:#546E7A;font-size:13px;line-height:1.5; }
+
+        /* Botão add filho */
+        .btn-primary { background:#1565C0;color:#fff;border:none;padding:12px 22px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.2s; }
+        .btn-primary:hover { background:#0D47A1; }
+
+        /* Modal */
+        .modal { display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center; }
+        .modal.active { display:flex; }
+        .modal-content { background:#fff;border-radius:20px;padding:28px;width:90%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.2); }
+        .modal-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; }
+        .modal-header h2 { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px; }
+        .modal-close { background:none;border:none;font-size:24px;cursor:pointer;color:#90A4AE; }
+        .modal-input { width:100%;padding:12px 14px;border:2px solid #BBDEFB;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;color:#1565C0;margin-bottom:14px;outline:none; }
+        .modal-input:focus { border-color:#1565C0; }
+        .modal-btns { display:flex;gap:12px; }
+        .modal-btns button { flex:1; }
+        .btn-secondary { background:#E3F2FD;color:#1565C0;border:2px solid #BBDEFB;padding:12px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s; }
+        .btn-secondary:hover { background:#BBDEFB; }
+        .alert-box { padding:10px;border-radius:8px;margin-bottom:12px;text-align:center;font-weight:600;font-size:13px;display:none; }
+        .alert-box.error { display:block;background:#FFEBEE;color:#C62828; }
+        .alert-box.success { display:block;background:#E8F5E9;color:#1B5E20; }
+
+        .empty { text-align:center;padding:50px 20px;color:#90A4AE; }
+        .empty i { font-size:56px;margin-bottom:14px;display:block; }
+
+        @media (max-width:768px) {
+            .hero { margin:16px;flex-direction:column; }
+            .content { padding:16px; }
+            .topbar { padding:14px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="logo-icon">🌟</div>
+        <div class="logo-text">Educa<span>Inclusiva</span></div>
+    </div>
+    <button class="btn-sair" onclick="sair()"><i class="ti ti-logout"></i> Sair</button>
+</header>
+
+<div class="hero">
+    <div class="hero-avatar">👨‍👩‍👧</div>
+    <div class="hero-info">
+        <div class="hero-nome" id="hero-nome">Carregando...</div>
+        <div class="hero-badge"><i class="ti ti-users"></i> Responsável / Familiar</div>
+    </div>
+    <div class="hero-stats">
+        <div class="stat-box">
+            <div class="stat-num" id="stat-filhos">0</div>
+            <div class="stat-label">Filhos vinculados</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-num" id="stat-media">0%</div>
+            <div class="stat-label">Progresso médio</div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <div class="section-title" style="margin-bottom:0">
+            <i class="ti ti-heart" style="color:#E53935"></i> Meus Filhos
+        </div>
+        <button class="btn-primary" onclick="abrirModal()">
+            <i class="ti ti-user-plus"></i> Vincular filho
+        </button>
+    </div>
+
+    <div id="filhos-container">
+        <p style="color:#1565C0;font-weight:700;text-align:center;padding:40px">Carregando... ⏳</p>
+    </div>
+
+    <div class="section-title" style="margin-top:16px">
+        <i class="ti ti-bell" style="color:#FF8F00"></i> Avisos e Comunicados
+    </div>
+
+    <div id="avisos-container">
+        <div class="aviso-card">
+            <div class="aviso-topo">
+                <span class="aviso-titulo">📅 Reunião de pais</span>
+                <span class="aviso-data">20/05/2025</span>
+            </div>
+            <p class="aviso-texto">Reunião geral com os professores marcada para o dia 27/05 às 18h. Confirme presença pelo sistema.</p>
+        </div>
+        <div class="aviso-card success">
+            <div class="aviso-topo">
+                <span class="aviso-titulo">🏆 Conquista desbloqueada!</span>
+                <span class="aviso-data">18/05/2025</span>
+            </div>
+            <p class="aviso-texto">Seu filho completou 10 atividades consecutivas. Parabéns pelo empenho!</p>
+        </div>
+        <div class="aviso-card warning">
+            <div class="aviso-topo">
+                <span class="aviso-titulo">⚠️ Atividade pendente</span>
+                <span class="aviso-data">15/05/2025</span>
+            </div>
+            <p class="aviso-texto">Há 2 atividades não concluídas da semana passada. Incentive seu filho a completá-las.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modalVincular">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Vincular Filho</h2>
+            <button class="modal-close" onclick="fecharModal()">✕</button>
+        </div>
+        <div id="alerta" class="alert-box"></div>
+        <input class="modal-input" id="emailFilho" type="email" placeholder="Email do aluno cadastrado" />
+        <div class="modal-btns">
+            <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+            <button class="btn-primary" onclick="vincularFilho()" style="justify-content:center">Vincular</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (!usuario || usuario.tipo !== "responsavel") {
+        window.location.href = "index.html";
+    }
+
+    document.getElementById("hero-nome").textContent = "Olá, " + usuario.nome + "! 👋";
+
+    // Escala de autismo: textos explicativos
+    const autismoDesc = {
+        0: { titulo: "Nível 0 – Sem diagnóstico TEA", texto: "Não há indicação de Transtorno do Espectro Autista. O aluno pode ter outras condições de aprendizado sendo acompanhadas." },
+        1: { titulo: "Nível 1 – Suporte leve (TEA)", texto: "O aluno apresenta dificuldades sem suporte, mas com pouca ajuda consegue se comunicar e interagir socialmente. Pode precisar de adaptações leves nas atividades." },
+        2: { titulo: "Nível 2 – Suporte moderado (TEA)", texto: "O aluno precisa de suporte substancial. Há dificuldades marcantes de comunicação e comportamentos repetitivos mais frequentes. Atividades altamente adaptadas são recomendadas." }
+    };
+
+    const iconeCondicao = {
+        "Nenhuma":"✅","Visual":"👁️","Auditiva":"👂","Cognitiva":"🧠","Física":"♿","Outro":"⭐"
+    };
+
+    let todosFilhos = [];
+
+    async function carregarFilhos() {
+        try {
+            // Tenta buscar do servidor (usa endpoint de professor adaptado)
+            const resposta = await fetch(`http://localhost:3000/alunos/${usuario.id}`);
+            const dados = await resposta.json();
+            if (resposta.ok) {
+                todosFilhos = dados.alunos;
+                renderizarFilhos(todosFilhos);
+                atualizarStats(todosFilhos);
+            } else {
+                renderizarFilhos([]);
+            }
+        } catch {
+            // Dados demo se servidor offline
+            const demo = [
+                { id:1, nome:"João Silva", email:"joao@escola.com", condicao:"Cognitiva", nivel:3, pontos:420, progresso:58, nivelAutismo:1 }
+            ];
+            todosFilhos = demo;
+            renderizarFilhos(demo);
+            atualizarStats(demo);
+        }
+    }
+
+    function renderizarFilhos(filhos) {
+        const container = document.getElementById("filhos-container");
+        if (filhos.length === 0) {
+            container.innerHTML = `<div class="empty"><i class="ti ti-user-off"></i><p>Nenhum filho vinculado ainda.<br>Clique em "Vincular filho" para adicionar.</p></div>`;
+            return;
+        }
+        container.innerHTML = filhos.map(f => {
+            const condicao = f.condicao || "Nenhuma";
+            const nivel = f.nivel || 1;
+            const pontos = f.pontos || 0;
+            const progresso = f.progresso || 0;
+            const nivelAutismo = f.nivelAutismo ?? 0;
+            const badgeCls = "badge-" + condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+            const desc = autismoDesc[nivelAutismo] || autismoDesc[0];
+
+            return `
+            <div class="filho-card">
+                <div class="filho-top">
+                    <div class="filho-avatar">🧒</div>
+                    <div>
+                        <div class="filho-nome">${f.nome}</div>
+                        <div class="filho-email">${f.email}</div>
+                    </div>
+                </div>
+
+                <span class="badge ${badgeCls}">${iconeCondicao[condicao]||"⭐"} ${condicao}</span>
+
+                <div class="progress-label">
+                    <span>Progresso geral</span><span>${progresso}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:0%" data-w="${progresso}"></div>
+                </div>
+
+                <div class="mini-stats">
+                    <div class="mini-stat"><div class="mini-num">⭐ ${nivel}</div><div class="mini-label">Nível</div></div>
+                    <div class="mini-stat"><div class="mini-num">🏆 ${pontos}</div><div class="mini-label">Pontos</div></div>
+                    <div class="mini-stat"><div class="mini-num">${progresso}%</div><div class="mini-label">Progresso</div></div>
+                </div>
+
+                <div class="autism-section">
+                    <div class="autism-title">🧩 Nível de Suporte (Autismo)</div>
+                    <div class="autism-scale">
+                        <div class="scale-seg scale-0 ${nivelAutismo===0?'ativo':''}">Nível 0<br><small>Sem TEA</small></div>
+                        <div class="scale-seg scale-1 ${nivelAutismo===1?'ativo':''}">Nível 1<br><small>Leve</small></div>
+                        <div class="scale-seg scale-2 ${nivelAutismo===2?'ativo':''}">Nível 2<br><small>Moderado</small></div>
+                    </div>
+                    <div class="autism-desc">
+                        <strong>${desc.titulo}</strong>
+                        ${desc.texto}
+                    </div>
+                </div>
+            </div>`;
+        }).join("");
+
+        // Anima barras de progresso
+        setTimeout(() => {
+            document.querySelectorAll(".progress-fill[data-w]").forEach(el => {
+                el.style.width = el.getAttribute("data-w") + "%";
+            });
+        }, 100);
+    }
+
+    function atualizarStats(filhos) {
+        document.getElementById("stat-filhos").textContent = filhos.length;
+        if (filhos.length > 0) {
+            const media = Math.round(filhos.reduce((a,f) => a + (f.progresso||0), 0) / filhos.length);
+            document.getElementById("stat-media").textContent = media + "%";
+        }
+    }
+
+    function abrirModal() {
+        document.getElementById("modalVincular").classList.add("active");
+        document.getElementById("emailFilho").value = "";
+        document.getElementById("alerta").className = "alert-box";
+    }
+
+    function fecharModal() {
+        document.getElementById("modalVincular").classList.remove("active");
+    }
+
+    async function vincularFilho() {
+        const email = document.getElementById("emailFilho").value.trim();
+        if (!email) {
+            showAlert("Digite um email válido", "error"); return;
+        }
+        try {
+            const resposta = await fetch("http://localhost:3000/adicionar-aluno", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({ professorId: usuario.id, emailAluno: email })
+            });
+            const dados = await resposta.json();
+            if (resposta.ok) {
+                showAlert("✅ Filho vinculado com sucesso!", "success");
+                setTimeout(() => { fecharModal(); carregarFilhos(); }, 1500);
+            } else {
+                showAlert(dados.mensagem || "Erro ao vincular", "error");
+            }
+        } catch {
+            showAlert("Erro ao conectar ao servidor", "error");
+        }
+    }
+
+    function showAlert(msg, tipo) {
+        const el = document.getElementById("alerta");
+        el.textContent = msg;
+        el.className = "alert-box " + tipo;
+    }
+
+    document.getElementById("modalVincular").addEventListener("click", e => {
+        if (e.target.id === "modalVincular") fecharModal();
+    });
+
+    function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "index.html";
+    }
+
+    carregarFilhos();
+</script>
+</body>
+</html>
