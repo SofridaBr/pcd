@@ -10,220 +10,117 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Nunito', sans-serif; background: #F0F6FF; min-height: 100vh; }
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: #F0F6FF;
-            min-height: 100vh;
+        /* ── TELA DE ACESSO NEGADO ── */
+        .acesso-negado {
+            display: none; position: fixed; inset: 0;
+            background: #fff; z-index: 99999;
+            flex-direction: column; align-items: center; justify-content: center;
+            gap: 16px; padding: 40px; text-align: center;
+        }
+        .acesso-negado.ativo { display: flex; }
+        .acesso-negado .icon { font-size: 80px; }
+        .acesso-negado h1 { font-family: 'Fredoka One', cursive; color: #B71C1C; font-size: 30px; }
+        .acesso-negado p { color: #546E7A; font-size: 15px; max-width: 400px; line-height: 1.7; }
+        .acesso-negado .redirect-info { font-size: 13px; color: #90A4AE; margin-top: 4px; }
+        .acesso-negado button {
+            margin-top: 8px;
+            background: #1565C0; color: #fff; border: none;
+            padding: 14px 28px; border-radius: 14px;
+            font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px;
+            cursor: pointer;
         }
 
         .topbar {
-            background: #0D47A1;
-            padding: 14px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: #0D47A1; padding: 14px 40px;
+            display: flex; align-items: center; justify-content: space-between;
             border-bottom: 3px solid #FFD600;
         }
-
         .topbar-left { display: flex; align-items: center; gap: 12px; }
-
-        .logo-icon {
-            width: 44px; height: 44px;
-            background: #FFD600; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-        }
-
-        .logo-text { font-family: 'Fredoka One', cursive; color: #fff; font-size: 26px; }
-        .logo-text span { color: #FFD600; }
-
-        .btn-sair {
-            background: #E53935; color: #fff; border: none;
-            padding: 9px 20px; border-radius: 12px;
-            font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px;
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: background 0.2s;
-        }
-        .btn-sair:hover { background: #B71C1C; }
+        .logo-icon { width:44px;height:44px;background:#FFD600;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px; }
+        .logo-text { font-family:'Fredoka One',cursive;color:#fff;font-size:26px; }
+        .logo-text span { color:#FFD600; }
+        .btn-sair { background:#E53935;color:#fff;border:none;padding:9px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.2s; }
+        .btn-sair:hover { background:#B71C1C; }
 
         .hero {
             background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
-            margin: 28px 40px 0;
-            border-radius: 24px;
-            padding: 32px 36px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
+            margin: 28px 40px 0; border-radius: 24px;
+            padding: 32px 36px; display: flex; align-items: center; gap: 24px;
             box-shadow: 0 8px 32px rgba(21,101,192,0.18);
         }
-
-        .hero-avatar {
-            width: 80px; height: 80px;
-            background: #FFD600; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 40px; flex-shrink: 0;
-        }
-
-        .hero-info { flex: 1; }
-
-        .hero-nome {
-            font-family: 'Fredoka One', cursive;
-            color: #fff; font-size: 28px;
-        }
-
-        .hero-condicao {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 13px;
-            margin-top: 8px;
-        }
-
-        /* cores por condição */
-        .cond-nenhuma  { background: #E3F2FD; color: #1565C0; }
-        .cond-visual   { background: #FFEBEE; color: #C62828; }
-        .cond-auditiva { background: #E8F5E9; color: #1B5E20; }
-        .cond-cognitiva{ background: #F3E5F5; color: #4A148C; }
-        .cond-fisica   { background: #EFEBE9; color: #3E2723; }
-        .cond-outro    { background: #FFF3E0; color: #E65100; }
-
-        .hero-stats { display: flex; gap: 16px; flex-wrap: wrap; }
-
-        .stat-box {
-            background: rgba(255,255,255,0.12);
-            border-radius: 16px;
-            padding: 16px 22px;
-            text-align: center; min-width: 88px;
-        }
-
-        .stat-num {
-            font-family: 'Fredoka One', cursive;
-            color: #FFD600; font-size: 26px;
-        }
-
-        .stat-label { color: #BBDEFB; font-size: 12px; font-weight: 600; margin-top: 4px; }
+        .hero-avatar { width:80px;height:80px;background:#FFD600;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0; }
+        .hero-info { flex:1; }
+        .hero-nome { font-family:'Fredoka One',cursive;color:#fff;font-size:28px; }
+        .hero-condicao { display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-weight:800;font-size:13px;margin-top:8px; }
+        .cond-nenhuma  { background:#E3F2FD;color:#1565C0; }
+        .cond-visual   { background:#FFEBEE;color:#C62828; }
+        .cond-auditiva { background:#E8F5E9;color:#1B5E20; }
+        .cond-cognitiva{ background:#F3E5F5;color:#4A148C; }
+        .cond-fisica   { background:#EFEBE9;color:#3E2723; }
+        .cond-outro    { background:#FFF3E0;color:#E65100; }
+        .hero-stats { display:flex;gap:16px;flex-wrap:wrap; }
+        .stat-box { background:rgba(255,255,255,0.12);border-radius:16px;padding:16px 22px;text-align:center;min-width:88px; }
+        .stat-num { font-family:'Fredoka One',cursive;color:#FFD600;font-size:26px; }
+        .stat-label { color:#BBDEFB;font-size:12px;font-weight:600;margin-top:4px; }
 
         .content { padding: 28px 40px 40px; }
+        .section-title { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px;margin-bottom:18px;display:flex;align-items:center;gap:10px; }
 
-        .section-title {
-            font-family: 'Fredoka One', cursive;
-            color: #1565C0; font-size: 22px;
-            margin-bottom: 18px;
-            display: flex; align-items: center; gap: 10px;
-        }
+        .dados-card { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.08);border:2px solid #E3F2FD;margin-bottom:28px; }
+        .dado-row { display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #F0F6FF; }
+        .dado-row:last-child { border-bottom:none; }
+        .dado-icon { width:40px;height:40px;border-radius:12px;background:#E3F2FD;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+        .dado-info strong { display:block;color:#1565C0;font-size:13px;font-weight:700; }
+        .dado-info span { color:#546E7A;font-size:14px; }
 
-        /* Barra de progresso */
-        .progress-section {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 2px 16px rgba(21,101,192,0.08);
-            border: 2px solid #E3F2FD;
-            margin-bottom: 28px;
-        }
+        .progress-section { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.08);border:2px solid #E3F2FD;margin-bottom:28px; }
+        .progress-header { display:flex;justify-content:space-between;font-size:14px;font-weight:700;color:#1565C0;margin-bottom:10px; }
+        .progress-bar { width:100%;height:18px;background:#E3F2FD;border-radius:10px;overflow:hidden; }
+        .progress-fill { height:100%;background:linear-gradient(90deg,#1565C0,#42A5F5);border-radius:10px;transition:width 1.2s cubic-bezier(.4,0,.2,1); }
 
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px; font-weight: 700;
-            color: #1565C0; margin-bottom: 10px;
-        }
+        .cards-row { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px; }
+        .info-card { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD;text-align:center;transition:transform 0.2s; }
+        .info-card:hover { transform:translateY(-3px); }
+        .card-icon { font-size:36px;margin-bottom:10px; }
+        .card-valor { font-family:'Fredoka One',cursive;color:#1565C0;font-size:30px; }
+        .card-label { color:#90A4AE;font-size:12px;font-weight:600;margin-top:4px; }
 
-        .progress-bar {
-            width: 100%; height: 18px;
-            background: #E3F2FD; border-radius: 10px; overflow: hidden;
-        }
+        .dicas-box { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD; }
+        .dica-item { display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #F0F6FF; }
+        .dica-item:last-child { border-bottom:none; }
+        .dica-icon { width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
+        .dica-texto strong { display:block;color:#1565C0;font-size:14px;margin-bottom:2px; }
+        .dica-texto span { color:#90A4AE;font-size:13px; }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #1565C0, #42A5F5);
-            border-radius: 10px;
-            transition: width 1.2s cubic-bezier(.4,0,.2,1);
-        }
+        .error-state { text-align:center;padding:40px 20px;background:#FFEBEE;border-radius:16px;color:#C62828;font-weight:700; }
 
-        /* Cards de conquistas */
-        .cards-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-
-        .info-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 2px 16px rgba(21,101,192,0.07);
-            border: 2px solid #E3F2FD;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .info-card:hover { transform: translateY(-3px); }
-
-        .card-icon { font-size: 36px; margin-bottom: 10px; }
-
-        .card-valor {
-            font-family: 'Fredoka One', cursive;
-            color: #1565C0; font-size: 30px;
-        }
-
-        .card-label { color: #90A4AE; font-size: 12px; font-weight: 600; margin-top: 4px; }
-
-        /* Bloco de dicas por condição */
-        .dicas-box {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 2px 16px rgba(21,101,192,0.07);
-            border: 2px solid #E3F2FD;
-        }
-
-        .dica-item {
-            display: flex; gap: 14px; align-items: flex-start;
-            padding: 12px 0;
-            border-bottom: 1px solid #F0F6FF;
-        }
-
-        .dica-item:last-child { border-bottom: none; }
-
-        .dica-icon {
-            width: 44px; height: 44px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; flex-shrink: 0;
-        }
-
-        .dica-texto strong { display: block; color: #1565C0; font-size: 14px; margin-bottom: 2px; }
-        .dica-texto span { color: #90A4AE; font-size: 13px; }
-
-        .error-state {
-            text-align: center; padding: 40px 20px;
-            background: #FFEBEE; border-radius: 16px;
-            color: #C62828; font-weight: 700;
-        }
-
-        @media (max-width: 768px) {
-            .hero { margin: 16px; flex-direction: column; }
-            .hero-stats { flex-wrap: wrap; }
-            .content { padding: 16px; }
-            .topbar { padding: 14px 20px; }
+        @media (max-width:768px) {
+            .hero { margin:16px;flex-direction:column; }
+            .hero-stats { flex-wrap:wrap; }
+            .content { padding:16px; }
+            .topbar { padding:14px 20px; }
         }
     </style>
 </head>
 <body>
+
+<!-- TELA DE ACESSO NEGADO -->
+<div class="acesso-negado" id="acesso-negado">
+    <div class="icon">🚫</div>
+    <h1>Acesso não permitido</h1>
+    <p id="msg-negado">Você não tem permissão para acessar esta área.</p>
+    <p class="redirect-info">Redirecionando em 3 segundos...</p>
+    <button onclick="irParaPainelCorreto()">Ir para meu painel agora</button>
+</div>
 
 <header class="topbar">
     <div class="topbar-left">
         <div class="logo-icon">🌟</div>
         <div class="logo-text">Educa<span>Inclusiva</span></div>
     </div>
-    <button class="btn-sair" onclick="sair()">
-        <i class="ti ti-logout"></i> Sair
-    </button>
+    <button class="btn-sair" onclick="sair()"><i class="ti ti-logout"></i> Sair</button>
 </header>
 
 <div class="hero">
@@ -233,117 +130,152 @@
         <div class="hero-condicao" id="hero-condicao">—</div>
     </div>
     <div class="hero-stats">
-        <div class="stat-box">
-            <div class="stat-num" id="stat-nivel">—</div>
-            <div class="stat-label">Nível</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-num" id="stat-pontos">—</div>
-            <div class="stat-label">Pontos</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-num" id="stat-progresso">—</div>
-            <div class="stat-label">Progresso</div>
-        </div>
+        <div class="stat-box"><div class="stat-num" id="stat-nivel">—</div><div class="stat-label">Nível</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-pontos">—</div><div class="stat-label">Pontos</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-progresso">—</div><div class="stat-label">Progresso</div></div>
     </div>
 </div>
 
 <div class="content" id="conteudo-principal">
-    <p style="color:#1565C0; font-weight:700; text-align:center; padding:60px">Carregando seus dados... ⏳</p>
+    <p style="color:#1565C0;font-weight:700;text-align:center;padding:60px">Carregando seus dados... ⏳</p>
 </div>
 
 <script>
     const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
 
-    if (!usuarioLocal || usuarioLocal.tipo !== "aluno") {
-        window.location.href = "index.html";
+    // Mapa de destinos por tipo
+    const destinosPorTipo = {
+        professor:   "painel-prof.html",
+        responsavel: "painel-responsavel.html",
+        coordenador: "painel-coordenador.html",
+        apoio:       "painel-prof.html"
+    };
+
+    function irParaPainelCorreto() {
+        if (!usuarioLocal) { window.location.href = "index.html"; return; }
+        window.location.href = destinosPorTipo[usuarioLocal.tipo] || "index.html";
     }
 
-    // Configurações por condição
+    // ── VERIFICAÇÃO DE PERMISSÃO ──
+    if (!usuarioLocal) {
+        window.location.href = "index.html";
+    } else if (usuarioLocal.tipo !== "aluno") {
+        const nomesTipo = {
+            professor:   "Professor(a)",
+            responsavel: "Responsável / Familiar",
+            coordenador: "Coordenador(a)",
+            apoio:       "Apoio / Cuidador"
+        };
+        const tela    = document.getElementById("acesso-negado");
+        const msgEl   = document.getElementById("msg-negado");
+        msgEl.textContent =
+            `Sua conta é do tipo "${nomesTipo[usuarioLocal.tipo] || usuarioLocal.tipo}". ` +
+            `Esta área é exclusiva para alunos. Você será redirecionado ao seu painel.`;
+        tela.classList.add("ativo");
+
+        setTimeout(() => {
+            window.location.href = destinosPorTipo[usuarioLocal.tipo] || "index.html";
+        }, 3000);
+    }
+
+    // Configurações visuais por condição
     const condicaoConfig = {
-        "Nenhuma":   { cls: "cond-nenhuma",  icon: "✅", avatar: "🧒", cor: "#E3F2FD", dicas: [] },
-        "Visual":    { cls: "cond-visual",   icon: "👁️", avatar: "🧒", cor: "#FFEBEE",
-            dicas: [
-                { i: "🔊", bg: "#FFEBEE", titulo: "Leitor de tela ativo", sub: "Use Alt+Shift+S para ouvir qualquer texto da tela" },
-                { i: "🔍", bg: "#FFEBEE", titulo: "Zoom disponível",       sub: "Pressione Ctrl++ para ampliar o conteúdo" },
-                { i: "🎨", bg: "#FFEBEE", titulo: "Alto contraste",        sub: "Ative no menu de acessibilidade para melhor visualização" }
+        "Nenhuma":   { cls:"cond-nenhuma",  icon:"✅", avatar:"🧒", dicas:[] },
+        "Visual":    { cls:"cond-visual",   icon:"👁️", avatar:"🧒",
+            dicas:[
+                { i:"🔊", bg:"#FFEBEE", titulo:"Leitor de tela ativo",  sub:"Use Alt+Shift+S para ouvir qualquer texto da tela" },
+                { i:"🔍", bg:"#FFEBEE", titulo:"Zoom disponível",        sub:"Pressione Ctrl++ para ampliar o conteúdo" },
+                { i:"🎨", bg:"#FFEBEE", titulo:"Alto contraste",         sub:"Ative no menu de acessibilidade para melhor visualização" }
             ]
         },
-        "Auditiva":  { cls: "cond-auditiva", icon: "👂", avatar: "🧒", cor: "#E8F5E9",
-            dicas: [
-                { i: "📝", bg: "#E8F5E9", titulo: "Legendas sempre visíveis", sub: "Todo conteúdo de áudio possui legenda automática" },
-                { i: "🤟", bg: "#E8F5E9", titulo: "Libras disponível",         sub: "Use o botão VLibras para tradução em Libras" },
-                { i: "💡", bg: "#E8F5E9", titulo: "Alertas visuais",           sub: "Notificações por animação e cor, sem depender de som" }
+        "Auditiva":  { cls:"cond-auditiva", icon:"👂", avatar:"🧒",
+            dicas:[
+                { i:"📝", bg:"#E8F5E9", titulo:"Legendas sempre visíveis", sub:"Todo conteúdo de áudio possui legenda automática" },
+                { i:"🤟", bg:"#E8F5E9", titulo:"Libras disponível",         sub:"Use o botão VLibras para tradução em Libras" },
+                { i:"💡", bg:"#E8F5E9", titulo:"Alertas visuais",           sub:"Notificações por animação e cor, sem depender de som" }
             ]
         },
-        "Cognitiva": { cls: "cond-cognitiva", icon: "🧠", avatar: "🧒", cor: "#F3E5F5",
-            dicas: [
-                { i: "🎯", bg: "#F3E5F5", titulo: "Atividades simplificadas", sub: "Exercícios com passos curtos e claros para você" },
-                { i: "⏸️", bg: "#F3E5F5", titulo: "Modo TDAH",               sub: "Ative no menu para reduzir distrações visuais" },
-                { i: "📖", bg: "#F3E5F5", titulo: "Fonte dislexia",           sub: "Ative no menu para facilitar a leitura" }
+        "Cognitiva": { cls:"cond-cognitiva", icon:"🧠", avatar:"🧒",
+            dicas:[
+                { i:"🎯", bg:"#F3E5F5", titulo:"Atividades simplificadas", sub:"Exercícios com passos curtos e claros para você" },
+                { i:"⏸️", bg:"#F3E5F5", titulo:"Modo TDAH",               sub:"Ative no menu para reduzir distrações visuais" },
+                { i:"📖", bg:"#F3E5F5", titulo:"Fonte dislexia",           sub:"Ative no menu para facilitar a leitura" }
             ]
         },
-        "Física":    { cls: "cond-fisica",   icon: "♿", avatar: "🧒", cor: "#EFEBE9",
-            dicas: [
-                { i: "⌨️", bg: "#EFEBE9", titulo: "Navegação por teclado", sub: "Use Tab e Enter para navegar sem mouse" },
-                { i: "🔲", bg: "#EFEBE9", titulo: "Áreas de clique amplas", sub: "Todos os botões têm área extra de toque" },
-                { i: "🎙️", bg: "#EFEBE9", titulo: "Comando por voz",       sub: "Em breve: controle a plataforma com sua voz" }
+        "Física":    { cls:"cond-fisica",   icon:"♿", avatar:"🧒",
+            dicas:[
+                { i:"⌨️", bg:"#EFEBE9", titulo:"Navegação por teclado", sub:"Use Tab e Enter para navegar sem mouse" },
+                { i:"🔲", bg:"#EFEBE9", titulo:"Áreas de clique amplas", sub:"Todos os botões têm área extra de toque" },
+                { i:"🎙️", bg:"#EFEBE9", titulo:"Comando por voz",       sub:"Em breve: controle a plataforma com sua voz" }
             ]
         },
-        "Outro":     { cls: "cond-outro",    icon: "⭐", avatar: "🧒", cor: "#FFF3E0",
-            dicas: [
-                { i: "🛠️", bg: "#FFF3E0", titulo: "Adaptações personalizadas", sub: "Seu professor pode configurar recursos especiais para você" }
+        "Outro":     { cls:"cond-outro",    icon:"⭐", avatar:"🧒",
+            dicas:[
+                { i:"🛠️", bg:"#FFF3E0", titulo:"Adaptações personalizadas", sub:"Seu professor pode configurar recursos especiais para você" }
             ]
         }
     };
 
     async function carregarDadosAluno() {
         try {
-            const resposta = await fetch(`http://localhost:3000/aluno/${usuarioLocal.id}`);
-            const dados = await resposta.json();
+            const res   = await fetch(`http://localhost:3000/aluno/${usuarioLocal.id}`);
+            const dados = await res.json();
 
-            if (!resposta.ok) {
+            if (!res.ok) {
+                // Usa dados do localStorage como fallback
                 renderizarPainel(usuarioLocal);
                 return;
             }
 
-            const aluno = { ...dados.aluno, condicao: usuarioLocal.condicao || dados.aluno.condicao || "Nenhuma" };
+            // Mescla dados do servidor com condicao do localStorage (selecionada no login)
+            const aluno = {
+                ...dados.aluno,
+                condicao: usuarioLocal.condicao || dados.aluno.condicao || "Nenhuma"
+            };
+            // Atualiza localStorage com dados frescos
             localStorage.setItem("usuario", JSON.stringify({ ...usuarioLocal, ...aluno }));
             renderizarPainel(aluno);
 
-        } catch (erro) {
+        } catch {
+            // Servidor offline: usa localStorage
             if (usuarioLocal.nome) {
                 renderizarPainel(usuarioLocal);
             } else {
                 document.getElementById("conteudo-principal").innerHTML = `
                     <div class="error-state">
                         <i class="ti ti-wifi-off" style="font-size:48px;display:block;margin-bottom:12px"></i>
-                        Sem conexão com o servidor.
+                        Sem conexão com o servidor. Faça login novamente.
                     </div>`;
             }
         }
     }
 
     function renderizarPainel(aluno) {
-        const condicao = aluno.condicao || "Nenhuma";
-        const nivel    = aluno.nivel    || 1;
-        const pontos   = aluno.pontos   || 0;
+        const condicao  = aluno.condicao  || "Nenhuma";
+        const nivel     = aluno.nivel     || 1;
+        const pontos    = aluno.pontos    || 0;
         const progresso = aluno.progresso || 0;
-        const cfg = condicaoConfig[condicao] || condicaoConfig["Nenhuma"];
+        const rg        = aluno.rg        || "Não informado";
+        const email     = aluno.email     || usuarioLocal.email || "—";
+        const nome      = aluno.nome      || usuarioLocal.nome  || "Aluno";
+
+        // Normaliza chave de condicao (pode vir "Física" ou "Fisica")
+        const cfgKey = Object.keys(condicaoConfig).find(k =>
+            k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") ===
+            condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        ) || "Nenhuma";
+        const cfg = condicaoConfig[cfgKey];
 
         // Hero
-        document.getElementById("hero-nome").textContent = "Olá, " + aluno.nome + "! 👋";
+        document.getElementById("hero-nome").textContent = "Olá, " + nome + "! 👋";
         document.getElementById("hero-avatar").textContent = cfg.avatar;
-
         const condEl = document.getElementById("hero-condicao");
         condEl.textContent = cfg.icon + " " + condicao;
-        condEl.className = "hero-condicao " + cfg.cls;
-
+        condEl.className   = "hero-condicao " + cfg.cls;
         document.getElementById("stat-nivel").textContent    = "⭐ " + nivel;
         document.getElementById("stat-pontos").textContent   = "🏆 " + pontos;
         document.getElementById("stat-progresso").textContent = progresso + "%";
 
-        // Dicas por condição
         const dicasHTML = cfg.dicas.length > 0 ? `
             <div class="section-title" style="margin-top:8px">
                 <i class="ti ti-bulb" style="color:#1565C0"></i> Recursos para você
@@ -352,24 +284,53 @@
                 ${cfg.dicas.map(d => `
                     <div class="dica-item">
                         <div class="dica-icon" style="background:${d.bg}">${d.i}</div>
-                        <div class="dica-texto">
-                            <strong>${d.titulo}</strong>
-                            <span>${d.sub}</span>
-                        </div>
-                    </div>
-                `).join("")}
-            </div>
-        ` : "";
+                        <div class="dica-texto"><strong>${d.titulo}</strong><span>${d.sub}</span></div>
+                    </div>`).join("")}
+            </div>` : "";
 
         document.getElementById("conteudo-principal").innerHTML = `
+            <div class="section-title">
+                <i class="ti ti-id-badge" style="color:#1565C0"></i> Meus Dados
+            </div>
+
+            <div class="dados-card">
+                <div class="dado-row">
+                    <div class="dado-icon">👤</div>
+                    <div class="dado-info">
+                        <strong>Nome completo</strong>
+                        <span>${nome}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">📧</div>
+                    <div class="dado-info">
+                        <strong>E-mail</strong>
+                        <span>${email}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">🪪</div>
+                    <div class="dado-info">
+                        <strong>RG</strong>
+                        <span>${rg}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">${cfg.icon}</div>
+                    <div class="dado-info">
+                        <strong>Necessidade registrada</strong>
+                        <span>${condicao}</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="section-title">
                 <i class="ti ti-chart-bar" style="color:#1565C0"></i> Meu Progresso
             </div>
 
             <div class="progress-section">
                 <div class="progress-header">
-                    <span>Progresso geral</span>
-                    <span>${progresso}%</span>
+                    <span>Progresso geral</span><span>${progresso}%</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width:0%"></div>
@@ -417,7 +378,10 @@
         window.location.href = "index.html";
     }
 
-    carregarDadosAluno();
+    // Só carrega se for aluno de verdade
+    if (usuarioLocal && usuarioLocal.tipo === "aluno") {
+        carregarDadosAluno();
+    }
 </script>
 </body>
 </html>

@@ -24,7 +24,6 @@
         .btn-sair { background:#E53935;color:#fff;border:none;padding:9px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.2s; }
         .btn-sair:hover { background:#B71C1C; }
 
-        /* Hero responsável */
         .hero {
             background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
             margin: 28px 40px 0; border-radius: 24px;
@@ -43,20 +42,11 @@
         .content { padding: 28px 40px 40px; }
         .section-title { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px;margin-bottom:18px;display:flex;align-items:center;gap:10px; }
 
-        /* Toolbar de busca */
-        .toolbar { display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap; }
-        .search-wrap { position:relative;flex:1;min-width:200px; }
-        .search-wrap i { position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#1565C0;font-size:20px; }
-        .search-input { width:100%;padding:11px 11px 11px 42px;border:2px solid #BBDEFB;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;color:#1565C0;background:#fff;outline:none; }
-
-        /* Card do filho (destaque) */
+        /* Card do filho */
         .filho-card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 28px;
+            background: #fff; border-radius: 24px; padding: 28px;
             box-shadow: 0 4px 24px rgba(21,101,192,0.10);
-            border: 2px solid #E3F2FD;
-            margin-bottom: 24px;
+            border: 2px solid #E3F2FD; margin-bottom: 24px;
             transition: transform 0.2s;
         }
         .filho-card:hover { transform: translateY(-3px); }
@@ -66,7 +56,14 @@
         .filho-nome { font-weight:800;color:#1565C0;font-size:18px; }
         .filho-email { color:#90A4AE;font-size:13px;margin-top:3px; }
 
-        /* Badge condição */
+        /* Dados do filho */
+        .dados-filho { background:#F8FBFF;border-radius:14px;padding:16px;margin-bottom:18px; }
+        .dado-row { display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #E3F2FD; }
+        .dado-row:last-child { border-bottom:none; }
+        .dado-icon { width:32px;height:32px;border-radius:10px;background:#E3F2FD;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+        .dado-info strong { display:block;color:#1565C0;font-size:11px;font-weight:700; }
+        .dado-info span { color:#546E7A;font-size:13px; }
+
         .badge {
             display:inline-flex;align-items:center;gap:5px;
             padding:5px 14px;border-radius:20px;
@@ -79,57 +76,29 @@
         .badge-fisica   { background:#EFEBE9;color:#3E2723; }
         .badge-outro    { background:#FFF3E0;color:#E65100; }
 
-        /* Progresso */
         .progress-label { display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#1565C0;margin-bottom:8px; }
         .progress-bar { width:100%;height:14px;background:#E3F2FD;border-radius:10px;overflow:hidden;margin-bottom:16px; }
         .progress-fill { height:100%;background:linear-gradient(90deg,#1565C0,#42A5F5);border-radius:10px;transition:width 1.2s ease; }
 
-        /* Stats mini */
         .mini-stats { display:flex;gap:12px;flex-wrap:wrap; }
         .mini-stat { flex:1;min-width:110px;background:#F0F6FF;border-radius:14px;padding:14px;text-align:center; }
         .mini-num { font-family:'Fredoka One',cursive;color:#1565C0;font-size:22px; }
         .mini-label { color:#90A4AE;font-size:11px;font-weight:600;margin-top:3px; }
 
         /* Escala de autismo */
-        .autism-section {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 2px 16px rgba(21,101,192,0.07);
-            border: 2px solid #E3F2FD;
-            margin-top: 20px;
-        }
+        .autism-section { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD;margin-top:20px; }
         .autism-title { font-weight:800;color:#1565C0;font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:8px; }
-
         .autism-scale { display:flex;gap:0;border-radius:14px;overflow:hidden;margin-bottom:12px; }
-        .scale-seg {
-            flex:1; padding:12px 8px; text-align:center;
-            font-weight:800; font-size:13px; cursor:pointer;
-            transition: filter 0.2s;
-            position: relative;
-        }
-        .scale-seg.ativo::after {
-            content: "▼";
-            position:absolute; bottom:-18px; left:50%; transform:translateX(-50%);
-            font-size:16px; color:#1565C0;
-        }
-        .scale-0  { background:#E8F5E9;color:#1B5E20; }
-        .scale-1  { background:#FFF9C4;color:#F57F17; }
-        .scale-2  { background:#FFEBEE;color:#C62828; }
-
-        .autism-desc {
-            background: #F0F6FF; border-radius: 12px; padding: 14px 16px;
-            color: #1565C0; font-size: 13px; line-height: 1.6; margin-top: 20px;
-        }
+        .scale-seg { flex:1;padding:12px 8px;text-align:center;font-weight:800;font-size:13px;cursor:default;position:relative; }
+        .scale-seg.ativo::after { content:"▼";position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:16px;color:#1565C0; }
+        .scale-0 { background:#E8F5E9;color:#1B5E20; }
+        .scale-1 { background:#FFF9C4;color:#F57F17; }
+        .scale-2 { background:#FFEBEE;color:#C62828; }
+        .autism-desc { background:#F0F6FF;border-radius:12px;padding:14px 16px;color:#1565C0;font-size:13px;line-height:1.6;margin-top:20px; }
         .autism-desc strong { display:block;font-size:15px;margin-bottom:4px; }
 
-        /* Avisos / comunicados */
-        .aviso-card {
-            background:#fff;border-radius:16px;padding:18px;
-            box-shadow:0 2px 12px rgba(21,101,192,0.07);
-            border-left:5px solid #1565C0;
-            margin-bottom:12px;
-        }
+        /* Avisos */
+        .aviso-card { background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(21,101,192,0.07);border-left:5px solid #1565C0;margin-bottom:12px; }
         .aviso-card.warning { border-left-color:#FF8F00; }
         .aviso-card.success { border-left-color:#2E7D32; }
         .aviso-topo { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
@@ -137,11 +106,11 @@
         .aviso-data { color:#90A4AE;font-size:12px; }
         .aviso-texto { color:#546E7A;font-size:13px;line-height:1.5; }
 
-        /* Botão add filho */
         .btn-primary { background:#1565C0;color:#fff;border:none;padding:12px 22px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.2s; }
         .btn-primary:hover { background:#0D47A1; }
+        .btn-secondary { background:#E3F2FD;color:#1565C0;border:2px solid #BBDEFB;padding:12px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s; }
+        .btn-secondary:hover { background:#BBDEFB; }
 
-        /* Modal */
         .modal { display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center; }
         .modal.active { display:flex; }
         .modal-content { background:#fff;border-radius:20px;padding:28px;width:90%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.2); }
@@ -152,8 +121,6 @@
         .modal-input:focus { border-color:#1565C0; }
         .modal-btns { display:flex;gap:12px; }
         .modal-btns button { flex:1; }
-        .btn-secondary { background:#E3F2FD;color:#1565C0;border:2px solid #BBDEFB;padding:12px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s; }
-        .btn-secondary:hover { background:#BBDEFB; }
         .alert-box { padding:10px;border-radius:8px;margin-bottom:12px;text-align:center;font-weight:600;font-size:13px;display:none; }
         .alert-box.error { display:block;background:#FFEBEE;color:#C62828; }
         .alert-box.success { display:block;background:#E8F5E9;color:#1B5E20; }
@@ -239,7 +206,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal vincular filho -->
 <div class="modal" id="modalVincular">
     <div class="modal-content">
         <div class="modal-header">
@@ -257,30 +224,35 @@
 
 <script>
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-    if (!usuario || usuario.tipo !== "responsavel") {
+
+    // ── VERIFICAÇÃO DE PERMISSÃO ──
+    if (!usuario) {
         window.location.href = "index.html";
+    } else if (usuario.tipo !== "responsavel") {
+        const destinos = {
+            aluno:       "painel.html",
+            professor:   "painel-prof.html",
+            coordenador: "painel-coordenador.html",
+            apoio:       "painel-prof.html"
+        };
+        window.location.href = destinos[usuario.tipo] || "index.html";
     }
 
     document.getElementById("hero-nome").textContent = "Olá, " + usuario.nome + "! 👋";
 
-    // Escala de autismo: textos explicativos
     const autismoDesc = {
         0: { titulo: "Nível 0 – Sem diagnóstico TEA", texto: "Não há indicação de Transtorno do Espectro Autista. O aluno pode ter outras condições de aprendizado sendo acompanhadas." },
-        1: { titulo: "Nível 1 – Suporte leve (TEA)", texto: "O aluno apresenta dificuldades sem suporte, mas com pouca ajuda consegue se comunicar e interagir socialmente. Pode precisar de adaptações leves nas atividades." },
+        1: { titulo: "Nível 1 – Suporte leve (TEA)",  texto: "O aluno apresenta dificuldades sem suporte, mas com pouca ajuda consegue se comunicar e interagir socialmente. Pode precisar de adaptações leves nas atividades." },
         2: { titulo: "Nível 2 – Suporte moderado (TEA)", texto: "O aluno precisa de suporte substancial. Há dificuldades marcantes de comunicação e comportamentos repetitivos mais frequentes. Atividades altamente adaptadas são recomendadas." }
     };
 
-    const iconeCondicao = {
-        "Nenhuma":"✅","Visual":"👁️","Auditiva":"👂","Cognitiva":"🧠","Física":"♿","Outro":"⭐"
-    };
-
+    const iconeCondicao = { "Nenhuma":"✅","Visual":"👁️","Auditiva":"👂","Cognitiva":"🧠","Física":"♿","Outro":"⭐" };
     let todosFilhos = [];
 
     async function carregarFilhos() {
         try {
-            // Tenta buscar do servidor (usa endpoint de professor adaptado)
             const resposta = await fetch(`http://localhost:3000/alunos/${usuario.id}`);
-            const dados = await resposta.json();
+            const dados    = await resposta.json();
             if (resposta.ok) {
                 todosFilhos = dados.alunos;
                 renderizarFilhos(todosFilhos);
@@ -291,11 +263,16 @@
         } catch {
             // Dados demo se servidor offline
             const demo = [
-                { id:1, nome:"João Silva", email:"joao@escola.com", condicao:"Cognitiva", nivel:3, pontos:420, progresso:58, nivelAutismo:1 }
+                { id:1, nome:"João Silva", email:"joao@escola.com", rg:"12.345.678-9", condicao:"Cognitiva", nivel:3, pontos:420, progresso:58, nivelAutismo:1 }
             ];
             todosFilhos = demo;
             renderizarFilhos(demo);
             atualizarStats(demo);
+
+            const aviso = document.createElement("div");
+            aviso.style.cssText = "background:#FFF9C4;border-radius:12px;padding:12px 16px;color:#F57F17;font-weight:700;font-size:13px;margin-bottom:18px;";
+            aviso.textContent = "⚠️ Servidor offline — exibindo dados de exemplo.";
+            document.querySelector(".content").prepend(aviso);
         }
     }
 
@@ -306,13 +283,14 @@
             return;
         }
         container.innerHTML = filhos.map(f => {
-            const condicao = f.condicao || "Nenhuma";
-            const nivel = f.nivel || 1;
-            const pontos = f.pontos || 0;
-            const progresso = f.progresso || 0;
+            const condicao     = f.condicao || "Nenhuma";
+            const nivel        = f.nivel || 1;
+            const pontos       = f.pontos || 0;
+            const progresso    = f.progresso || 0;
             const nivelAutismo = f.nivelAutismo ?? 0;
-            const badgeCls = "badge-" + condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-            const desc = autismoDesc[nivelAutismo] || autismoDesc[0];
+            const rg           = f.rg || "Não informado";
+            const badgeCls     = "badge-" + condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+            const desc         = autismoDesc[nivelAutismo] || autismoDesc[0];
 
             return `
             <div class="filho-card">
@@ -321,6 +299,31 @@
                     <div>
                         <div class="filho-nome">${f.nome}</div>
                         <div class="filho-email">${f.email}</div>
+                    </div>
+                </div>
+
+                <!-- Dados completos do filho -->
+                <div class="dados-filho">
+                    <div class="dado-row">
+                        <div class="dado-icon">👤</div>
+                        <div class="dado-info">
+                            <strong>Nome completo</strong>
+                            <span>${f.nome}</span>
+                        </div>
+                    </div>
+                    <div class="dado-row">
+                        <div class="dado-icon">📧</div>
+                        <div class="dado-info">
+                            <strong>E-mail</strong>
+                            <span>${f.email}</span>
+                        </div>
+                    </div>
+                    <div class="dado-row">
+                        <div class="dado-icon">🪪</div>
+                        <div class="dado-info">
+                            <strong>RG</strong>
+                            <span>${rg}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -354,7 +357,6 @@
             </div>`;
         }).join("");
 
-        // Anima barras de progresso
         setTimeout(() => {
             document.querySelectorAll(".progress-fill[data-w]").forEach(el => {
                 el.style.width = el.getAttribute("data-w") + "%";
@@ -382,14 +384,12 @@
 
     async function vincularFilho() {
         const email = document.getElementById("emailFilho").value.trim();
-        if (!email) {
-            showAlert("Digite um email válido", "error"); return;
-        }
+        if (!email) { showAlert("Digite um email válido", "error"); return; }
         try {
             const resposta = await fetch("http://localhost:3000/adicionar-aluno", {
-                method:"POST",
-                headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({ professorId: usuario.id, emailAluno: email })
+                method:  "POST",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify({ professorId: usuario.id, emailAluno: email })
             });
             const dados = await resposta.json();
             if (resposta.ok) {
@@ -406,7 +406,7 @@
     function showAlert(msg, tipo) {
         const el = document.getElementById("alerta");
         el.textContent = msg;
-        el.className = "alert-box " + tipo;
+        el.className   = "alert-box " + tipo;
     }
 
     document.getElementById("modalVincular").addEventListener("click", e => {

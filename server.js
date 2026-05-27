@@ -1,125 +1,233 @@
 const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
+const mysql   = require("mysql2");
+const cors    = require("cors");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// ════════════════════════════════════════════════
 // CONEXÃO COM MYSQL
+// ════════════════════════════════════════════════
 const conexao = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "123456",
-    database: "educa_inclusiva",
+    host:             "localhost",
+    user:             "root",
+    password:         "123456",
+    database:         "educa_inclusiva",
     waitForConnections: true,
-    connectionLimit: 10
+    connectionLimit:  10
 });
 
-// =======================
-// LOGIN ALUNO / PROFESSOR
-// =======================
+// ════════════════════════════════════════════════
+// LOGIN (todos os tipos)
+// ════════════════════════════════════════════════
 app.post("/login", (req, res) => {
     const { email, senha } = req.body;
 
-    const sql = `SELECT * FROM usuarios WHERE email = ? AND senha = ?`;
+    if (!email || !senha) {
+        return res.status(400).json({ mensagem: "Preencha email e senha." });
+    }
+
+    const sql = `
+        SELECT id, nome, email, tipo, nivel, pontos, progresso, condicao, rg, nivelAutismo
+        FROM usuarios
+        WHERE email = ? AND senha = ?
+    `;
 
     conexao.query(sql, [email, senha], (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
 
         if (resultado.length > 0) {
             res.json({ mensagem: "Login correto", usuario: resultado[0] });
         } else {
-            res.status(401).json({ mensagem: "Email ou senha incorretos" });
+            res.status(401).json({ mensagem: "Email ou senha incorretos." });
         }
     });
 });
 
-// =======================
-// ATUALIZAR CONDIÇÃO DO ALUNO (selecionada no login)
-// =======================
-app.post("/atualizar-condicao", (req, res) => {
-    const { id, condicao } = req.body;
+// ════════════════════════════════════════════════
+// CADASTRO DE ALUNO (auto-registro)
+// ════════════════════════════════════════════════
+app.post("/cadastro/aluno", (req, res) => {
+    const { nome, email, rg, senha } = req.body;
 
-    const sql = `UPDATE usuarios SET condicao = ? WHERE id = ? AND tipo = 'aluno'`;
+    if (!nome || !email || !rg || !senha) {
+        return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+    }
+    if (senha.length < 6) {
+        return res.status(400).json({ mensagem: "A senha deve ter pelo menos 6 caracteres." });
+    }
 
-    conexao.query(sql, [condicao, id], (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
-        res.json({ mensagem: "Condição atualizada com sucesso" });
-    });
-});
+    // Verifica email duplicado
+    conexao.query(`SELECT id FROM usuarios WHERE email = ?`, [email], (erro, resultado) => {
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+        if (resultado.length > 0) return res.status(400).json({ mensagem: "Este email já está cadastrado." });
 
-// =======================
-// BUSCAR ALUNOS DO PROFESSOR (e também do responsável)
-// =======================
-app.get("/alunos/:professorId", (req, res) => {
-    const { professorId } = req.params;
+        // Verifica RG duplicado
+        conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+            if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
 
-    const sql = `
-        SELECT u.* FROM usuarios u
-        INNER JOIN professor_aluno pa ON u.id = pa.aluno_id
-        WHERE pa.professor_id = ? AND u.tipo = 'aluno'
-    `;
+            const sqlInsere = `
+                INSERT INTO usuarios (nome, email, rg, senha, tipo, nivel, pontos, progresso, condicao, nivelAutismo)
+                VALUES (?, ?, ?, ?, 'aluno', 1, 0, 0, 'Nenhuma', 0)
+            `;
 
-    conexao.query(sql, [professorId], (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
-        res.json({ alunos: resultado });
-    });
-});
-
-// =======================
-// ADICIONAR ALUNO AO PROFESSOR / RESPONSÁVEL
-// =======================
-app.post("/adicionar-aluno", (req, res) => {
-    const { professorId, emailAluno } = req.body;
-
-    const sqlBuscaAluno = `SELECT id FROM usuarios WHERE email = ? AND tipo = 'aluno'`;
-
-    conexao.query(sqlBuscaAluno, [emailAluno], (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
-        if (resultado.length === 0) return res.status(404).json({ mensagem: "Aluno não encontrado com esse email" });
-
-        const alunoId = resultado[0].id;
-
-        const sqlVerifica = `SELECT id FROM professor_aluno WHERE professor_id = ? AND aluno_id = ?`;
-
-        conexao.query(sqlVerifica, [professorId, alunoId], (erro, resultado) => {
-            if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
-            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este aluno já está vinculado" });
-
-            const sqlAdiciona = `INSERT INTO professor_aluno (professor_id, aluno_id) VALUES (?, ?)`;
-
-            conexao.query(sqlAdiciona, [professorId, alunoId], (erro) => {
-                if (erro) return res.status(500).json({ mensagem: "Erro ao adicionar aluno" });
-                res.json({ mensagem: "Aluno adicionado com sucesso!", alunoId });
+            conexao.query(sqlInsere, [nome, email, rg, senha], (erro, resultado) => {
+                if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
+                res.json({
+                    mensagem: "Conta criada com sucesso!",
+                    usuario:  { id: resultado.insertId, nome, email, rg, tipo: "aluno" }
+                });
             });
         });
     });
 });
 
-// =======================
+// ════════════════════════════════════════════════
+// CADASTRO INSTITUCIONAL
+// professor / responsavel / coordenador / apoio
+// ════════════════════════════════════════════════
+app.post("/cadastro/institucional", (req, res) => {
+    const { nome, email, rg, senha, tipo } = req.body;
+
+    const tiposPermitidos = ["professor", "responsavel", "coordenador", "apoio"];
+
+    if (!nome || !email || !rg || !senha || !tipo) {
+        return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+    }
+    if (!tiposPermitidos.includes(tipo)) {
+        return res.status(400).json({ mensagem: "Tipo de acesso inválido." });
+    }
+    if (senha.length < 6) {
+        return res.status(400).json({ mensagem: "A senha deve ter pelo menos 6 caracteres." });
+    }
+
+    conexao.query(`SELECT id FROM usuarios WHERE email = ?`, [email], (erro, resultado) => {
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+        if (resultado.length > 0) return res.status(400).json({ mensagem: "Este email já está cadastrado." });
+
+        conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+            if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
+
+            const sqlInsere = `INSERT INTO usuarios (nome, email, rg, senha, tipo) VALUES (?, ?, ?, ?, ?)`;
+
+            conexao.query(sqlInsere, [nome, email, rg, senha, tipo], (erro, resultado) => {
+                if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
+                res.json({
+                    mensagem: "Cadastro realizado com sucesso!",
+                    usuario:  { id: resultado.insertId, nome, email, rg, tipo }
+                });
+            });
+        });
+    });
+});
+
+// ════════════════════════════════════════════════
+// ATUALIZAR CONDIÇÃO DO ALUNO
+// ════════════════════════════════════════════════
+app.post("/atualizar-condicao", (req, res) => {
+    const { id, condicao } = req.body;
+
+    if (!id || !condicao) {
+        return res.status(400).json({ mensagem: "ID e condição são obrigatórios." });
+    }
+
+    const sql = `UPDATE usuarios SET condicao = ? WHERE id = ? AND tipo = 'aluno'`;
+
+    conexao.query(sql, [condicao, id], (erro, resultado) => {
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+        if (resultado.affectedRows === 0) return res.status(404).json({ mensagem: "Aluno não encontrado." });
+        res.json({ mensagem: "Condição atualizada com sucesso." });
+    });
+});
+
+// ════════════════════════════════════════════════
 // BUSCAR DADOS DE UM ALUNO ESPECÍFICO
-// =======================
+// ════════════════════════════════════════════════
 app.get("/aluno/:id", (req, res) => {
     const { id } = req.params;
 
     const sql = `
-        SELECT id, nome, email, tipo, nivel, pontos, progresso, condicao, nivelAutismo
+        SELECT id, nome, email, rg, tipo, nivel, pontos, progresso, condicao, nivelAutismo
         FROM usuarios
         WHERE id = ? AND tipo = 'aluno'
     `;
 
     conexao.query(sql, [id], (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
-        if (resultado.length === 0) return res.status(404).json({ mensagem: "Aluno não encontrado" });
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+        if (resultado.length === 0) return res.status(404).json({ mensagem: "Aluno não encontrado." });
         res.json({ aluno: resultado[0] });
     });
 });
 
-// =======================
-// BUSCAR ESTATÍSTICAS DA ESCOLA (para o coordenador)
-// =======================
+// ════════════════════════════════════════════════
+// BUSCAR ALUNOS DO PROFESSOR / RESPONSÁVEL
+// ════════════════════════════════════════════════
+app.get("/alunos/:professorId", (req, res) => {
+    const { professorId } = req.params;
+
+    const sql = `
+        SELECT u.id, u.nome, u.email, u.rg, u.tipo, u.nivel, u.pontos,
+               u.progresso, u.condicao, u.nivelAutismo
+        FROM usuarios u
+        INNER JOIN professor_aluno pa ON u.id = pa.aluno_id
+        WHERE pa.professor_id = ? AND u.tipo = 'aluno'
+    `;
+
+    conexao.query(sql, [professorId], (erro, resultado) => {
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+        res.json({ alunos: resultado });
+    });
+});
+
+// ════════════════════════════════════════════════
+// ADICIONAR ALUNO AO PROFESSOR / RESPONSÁVEL
+// ════════════════════════════════════════════════
+app.post("/adicionar-aluno", (req, res) => {
+    const { professorId, emailAluno } = req.body;
+
+    if (!professorId || !emailAluno) {
+        return res.status(400).json({ mensagem: "Dados incompletos." });
+    }
+
+    conexao.query(
+        `SELECT id FROM usuarios WHERE email = ? AND tipo = 'aluno'`,
+        [emailAluno],
+        (erro, resultado) => {
+            if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+            if (resultado.length === 0)
+                return res.status(404).json({ mensagem: "Aluno não encontrado com esse email." });
+
+            const alunoId = resultado[0].id;
+
+            conexao.query(
+                `SELECT id FROM professor_aluno WHERE professor_id = ? AND aluno_id = ?`,
+                [professorId, alunoId],
+                (erro, resultado) => {
+                    if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+                    if (resultado.length > 0)
+                        return res.status(400).json({ mensagem: "Este aluno já está vinculado." });
+
+                    conexao.query(
+                        `INSERT INTO professor_aluno (professor_id, aluno_id) VALUES (?, ?)`,
+                        [professorId, alunoId],
+                        (erro) => {
+                            if (erro) return res.status(500).json({ mensagem: "Erro ao adicionar aluno." });
+                            res.json({ mensagem: "Aluno adicionado com sucesso!", alunoId });
+                        }
+                    );
+                }
+            );
+        }
+    );
+});
+
+// ════════════════════════════════════════════════
+// ESTATÍSTICAS GERAIS DA ESCOLA (coordenador)
+// ════════════════════════════════════════════════
 app.get("/escola/stats", (req, res) => {
     const sqlAlunos = `
         SELECT
@@ -134,55 +242,60 @@ app.get("/escola/stats", (req, res) => {
         WHERE tipo = 'aluno'
     `;
 
-    const sqlProfessores = `SELECT COUNT(*) AS totalProfessores FROM usuarios WHERE tipo = 'professor'`;
+    const sqlProfessores = `
+        SELECT COUNT(*) AS totalProfessores
+        FROM usuarios
+        WHERE tipo IN ('professor', 'coordenador', 'apoio')
+    `;
 
     conexao.query(sqlAlunos, (erro, resAlunos) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
 
         conexao.query(sqlProfessores, (erro, resProfs) => {
-            if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
+            if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
 
             res.json({
-                totalAlunos: resAlunos[0].totalAlunos,
+                totalAlunos:      resAlunos[0].totalAlunos,
                 totalProfessores: resProfs[0].totalProfessores,
-                progressoMedio: Math.round(resAlunos[0].progressoMedio || 0),
+                progressoMedio:   Math.round(resAlunos[0].progressoMedio || 0),
                 condicoes: {
-                    Visual: resAlunos[0].visual,
+                    Visual:   resAlunos[0].visual,
                     Auditiva: resAlunos[0].auditiva,
-                    Cognitiva: resAlunos[0].cognitiva,
-                    Fisica: resAlunos[0].fisica,
-                    Nenhuma: resAlunos[0].nenhuma
+                    Cognitiva:resAlunos[0].cognitiva,
+                    Fisica:   resAlunos[0].fisica,
+                    Nenhuma:  resAlunos[0].nenhuma
                 }
             });
         });
     });
 });
 
-// =======================
-// BUSCAR TURMAS DO PROFESSOR (para coordenador)
-// =======================
+// ════════════════════════════════════════════════
+// TURMAS POR EDUCADOR (coordenador)
+// ════════════════════════════════════════════════
 app.get("/escola/turmas", (req, res) => {
     const sql = `
         SELECT
             u.nome AS professor,
-            COUNT(pa.aluno_id) AS totalAlunos,
-            AVG(al.progresso) AS progressoMedio
+            COUNT(pa.aluno_id)  AS totalAlunos,
+            AVG(al.progresso)   AS progressoMedio
         FROM usuarios u
         LEFT JOIN professor_aluno pa ON u.id = pa.professor_id
-        LEFT JOIN usuarios al ON pa.aluno_id = al.id
-        WHERE u.tipo = 'professor'
+        LEFT JOIN usuarios al        ON pa.aluno_id = al.id
+        WHERE u.tipo IN ('professor', 'coordenador', 'apoio')
         GROUP BY u.id, u.nome
+        ORDER BY totalAlunos DESC
     `;
 
     conexao.query(sql, (erro, resultado) => {
-        if (erro) return res.status(500).json({ mensagem: "Erro no servidor" });
+        if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
         res.json({ turmas: resultado });
     });
 });
 
-// =======================
+// ════════════════════════════════════════════════
 // SERVIDOR
-// =======================
+// ════════════════════════════════════════════════
 app.listen(3000, () => {
-    console.log("Servidor rodando na porta 3000");
+    console.log("✅ Servidor EducaInclusiva rodando na porta 3000");
 });

@@ -11,11 +11,7 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Nunito', sans-serif;
@@ -33,570 +29,216 @@
       align-items: center;
       gap: 12px;
       border-bottom: 3px solid #FFD600;
-
     }
 
     /* BOTÃO FLUTUANTE */
-
     .accessibility-button {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-
-      width: 70px;
-      height: 70px;
-
+      position: fixed; right: 20px; bottom: 20px;
+      width: 70px; height: 70px;
       background: #0057ff;
-
       color: white;
-
       border-radius: 50%;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
+      display: flex; align-items: center; justify-content: center;
       font-size: 32px;
-
       cursor: pointer;
-
       z-index: 9999;
-
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
       transition: 0.3s;
     }
+    .accessibility-button:hover { transform: scale(1.1); }
 
-    .accessibility-button:hover {
-      transform: scale(1.1);
-    }
-
-    /* MENU */
-
+    /* MENU ACESSIBILIDADE */
     .accessibility-menu {
-      position: fixed;
-
-      right: 20px;
-      bottom: 100px;
-
+      position: fixed; right: 20px; bottom: 100px;
       width: 280px;
-
       background: white;
-
       border-radius: 20px;
-
       padding: 20px;
-
-      display: none;
-
-      flex-direction: column;
-
-      gap: 12px;
-
+      display: none; flex-direction: column; gap: 12px;
       z-index: 9999;
-
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
-
-    .accessibility-menu.active {
-      display: flex;
-    }
-
-    .accessibility-menu h2 {
-      color: #0057ff;
-      text-align: center;
-    }
-
+    .accessibility-menu.active { display: flex; }
+    .accessibility-menu h2 { color: #0057ff; text-align: center; }
     .accessibility-menu button {
-      border: none;
-
-      padding: 12px;
-
-      border-radius: 12px;
-
-      cursor: pointer;
-
-      background: #0057ff;
-
-      color: white;
-
-      font-size: 15px;
-
-      transition: 0.3s;
+      border: none; padding: 12px; border-radius: 12px;
+      cursor: pointer; background: #0057ff; color: white;
+      font-size: 15px; transition: 0.3s;
     }
+    .accessibility-menu button:hover { background: #003bb3; }
 
-    .accessibility-menu button:hover {
-      background: #003bb3;
-    }
-
-    /* ALTO CONTRASTE */
-
-    .high-contrast {
-      background: black !important;
-      color: yellow !important;
-    }
-
-    /* FONTE DISLEXIA */
-
-    .dyslexia {
-      font-family: Arial, sans-serif;
-      letter-spacing: 2px;
-      line-height: 2;
-    }
-
-    /* MODO TDAH */
-
-    .tdah-mode * {
-      animation: none !important;
-      transition: none !important;
-    }
-
-    /* GUIA DE LEITURA */
+    .high-contrast { background: black !important; color: yellow !important; }
+    .dyslexia { font-family: Arial, sans-serif; letter-spacing: 2px; line-height: 2; }
+    .tdah-mode * { animation: none !important; transition: none !important; }
 
     #reading-guide {
-      position: fixed;
-
-      width: 100%;
-      height: 4px;
-
-      background: red;
-
-      top: 0;
-      left: 0;
-
-      z-index: 9998;
-
-      display: none;
+      position: fixed; width: 100%; height: 4px;
+      background: red; top: 0; left: 0; z-index: 9998; display: none;
     }
 
     .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: #FFD600;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
+      width: 44px; height: 44px; background: #FFD600;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 24px;
     }
-
-    .logo-text {
-      font-family: 'Fredoka One', cursive;
-      color: #fff;
-      font-size: 26px;
-      letter-spacing: 0.5px;
-    }
-
-    .logo-text span {
-      color: #FFD600;
-    }
+    .logo-text { font-family: 'Fredoka One', cursive; color: #fff; font-size: 26px; letter-spacing: 0.5px; }
+    .logo-text span { color: #FFD600; }
 
     /* ── Main layout ── */
-    .main {
-      display: flex;
-      flex: 1;
-      min-height: calc(100vh - 75px);
-    }
+    .main { display: flex; flex: 1; min-height: calc(100vh - 75px); }
 
     /* ── Left panel ── */
     .left {
-      flex: 1.1;
-      background: #1565C0;
+      flex: 1.1; background: #1565C0;
       padding: 50px 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 24px;
+      display: flex; flex-direction: column; justify-content: center; gap: 24px;
     }
-
-    .headline {
-      font-family: 'Fredoka One', cursive;
-      color: #fff;
-      font-size: 36px;
-      line-height: 1.2;
-    }
-
-    .headline span {
-      color: #FFD600;
-    }
-
-    .desc {
-      color: #BBDEFB;
-      font-size: 15px;
-      line-height: 1.8;
-      max-width: 380px;
-    }
-
-    .features {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      margin-top: 8px;
-    }
-
-    .feat {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-    }
-
-    .feat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      flex-shrink: 0;
-    }
-
-    .ic-red {
-      background: #E53935;
-    }
-
-    .ic-green {
-      background: #2E7D32;
-    }
-
-    .ic-purple {
-      background: #6A1B9A;
-    }
-
-    .ic-brown {
-      background: #5D4037;
-    }
-
-    .ic-blue2 {
-      background: #028cd1;
-    }
-
-    .feat-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .feat-title {
-      color: #fff;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .feat-sub {
-      color: #90CAF9;
-      font-size: 13px;
-      line-height: 1.5;
-    }
+    .headline { font-family: 'Fredoka One', cursive; color: #fff; font-size: 36px; line-height: 1.2; }
+    .headline span { color: #FFD600; }
+    .desc { color: #BBDEFB; font-size: 15px; line-height: 1.8; max-width: 380px; }
+    .features { display: flex; flex-direction: column; gap: 18px; margin-top: 8px; }
+    .feat { display: flex; align-items: flex-start; gap: 16px; }
+    .feat-icon { width: 50px; height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+    .ic-red { background: #E53935; }
+    .ic-green { background: #2E7D32; }
+    .ic-purple { background: #6A1B9A; }
+    .feat-text { display: flex; flex-direction: column; gap: 2px; }
+    .feat-title { color: #fff; font-weight: 700; font-size: 15px; }
+    .feat-sub { color: #90CAF9; font-size: 13px; line-height: 1.5; }
 
     /* ── Right panel ── */
     .right {
-      flex: 1;
-      background: #fff;
+      flex: 1; background: #fff;
       padding: 44px 40px;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       border-radius: 28px 0 0 28px;
+      overflow-y: auto;
     }
 
     /* ── Tabs ── */
     .tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 28px;
-      background: #E3F2FD;
-      border-radius: 14px;
-      padding: 5px;
+      display: flex; gap: 0; margin-bottom: 28px;
+      background: #E3F2FD; border-radius: 14px; padding: 5px;
     }
-
     .tab {
-      flex: 1;
-      padding: 11px 0;
-      border: none;
-      background: transparent;
-      border-radius: 11px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      color: #1565C0;
-      cursor: pointer;
+      flex: 1; padding: 11px 0; border: none;
+      background: transparent; border-radius: 11px;
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+      color: #1565C0; cursor: pointer;
       transition: background 0.2s, color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-
-    .tab.active {
-      background: #1565C0;
-      color: #fff;
-    }
-
-    .tab i {
-      font-size: 18px;
-    }
+    .tab.active { background: #1565C0; color: #fff; }
+    .tab i { font-size: 18px; }
 
     /* ── Form ── */
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-    }
-
-    .form-title {
-      font-family: 'Fredoka One', cursive;
-      color: #1565C0;
-      font-size: 24px;
-      margin-bottom: 5px;
-    }
-
-    .form-sub {
-      font-size: 13px;
-      color: #90A4AE;
-      margin-bottom: 30px;
-    }
-
-    .label {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1565C0;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .label i {
-      font-size: 30px;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input-wrap i.field-icon {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-      color: #1565C0;
-      pointer-events: none;
-    }
-
+    .form { display: flex; flex-direction: column; gap: 20px; }
+    .form-title { font-family: 'Fredoka One', cursive; color: #1565C0; font-size: 24px; margin-bottom: 2px; }
+    .form-sub { font-size: 13px; color: #90A4AE; margin-bottom: 10px; }
+    .label { font-size: 13px; font-weight: 700; color: #1565C0; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .label i { font-size: 30px; }
+    .input-wrap { position: relative; }
+    .input-wrap i.field-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #1565C0; pointer-events: none; }
     .ei-input {
-      width: 100%;
-      padding: 13px 13px 13px 44px;
-      border: 2px solid #BBDEFB;
-      border-radius: 12px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      color: #1565C0;
-      background: #F8FBFF;
-      outline: none;
-      transition: border-color 0.2s;
+      width: 100%; padding: 13px 13px 13px 44px;
+      border: 2px solid #BBDEFB; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 14px; color: #1565C0;
+      background: #F8FBFF; outline: none; transition: border-color 0.2s;
     }
-
-    .ei-input:focus {
-      border-color: #1565C0;
-      background: #fff;
-    }
-
+    .ei-input:focus { border-color: #1565C0; background: #fff; }
     .ei-select {
-      width: 100%;
-      padding: 13px 13px 13px 44px;
-      border: 2px solid #BBDEFB;
-      border-radius: 12px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      color: #1565C0;
-      background: #F8FBFF;
-      outline: none;
-      appearance: none;
-      cursor: pointer;
+      width: 100%; padding: 13px 13px 13px 44px;
+      border: 2px solid #BBDEFB; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 14px; color: #1565C0;
+      background: #F8FBFF; outline: none; appearance: none; cursor: pointer;
     }
 
     /* ── PcD chips ── */
-    .pcd-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .pcd-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .pcd-chip {
-      padding: 7px 13px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: 'Nunito', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      padding: 7px 13px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      border: 2px solid transparent; cursor: pointer; transition: all 0.15s;
+      font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 5px;
     }
-
-    .chip-red {
-      background: #FFEBEE;
-      color: #C62828;
-      border-color: #EF9A9A;
-    }
-
-    .chip-green {
-      background: #E8F5E9;
-      color: #1B5E20;
-      border-color: #A5D6A7;
-    }
-
-    .chip-purple {
-      background: #F3E5F5;
-      color: #4A148C;
-      border-color: #CE93D8;
-    }
-
-    .chip-brown {
-      background: #EFEBE9;
-      color: #3E2723;
-      border-color: #BCAAA4;
-    }
-
-    .chip-pink {
-      background: #EFEBE9;
-      color: #e349c7;
-      border-color: #de73bc;
-    }
-
-
-    .chip-red.sel {
-      background: #E53935;
-      color: #fff;
-      border-color: #E53935;
-    }
-
-    .chip-green.sel {
-      background: #2E7D32;
-      color: #fff;
-      border-color: #2E7D32;
-    }
-
-    .chip-purple.sel {
-      background: #6A1B9A;
-      color: #fff;
-      border-color: #6A1B9A;
-    }
-
-    .chip-brown.sel {
-      background: #5D4037;
-      color: #fff;
-      border-color: #5D4037;
-    }
-
-    .chip-pink.sel {
-      background: #e349c7;
-      color: #fff;
-      border-color: #de73bc;
-    }
+    .chip-red    { background: #FFEBEE; color: #C62828; border-color: #EF9A9A; }
+    .chip-green  { background: #E8F5E9; color: #1B5E20; border-color: #A5D6A7; }
+    .chip-purple { background: #F3E5F5; color: #4A148C; border-color: #CE93D8; }
+    .chip-brown  { background: #EFEBE9; color: #3E2723; border-color: #BCAAA4; }
+    .chip-pink   { background: #EFEBE9; color: #e349c7; border-color: #de73bc; }
+    .chip-red.sel    { background: #E53935; color: #fff; border-color: #E53935; }
+    .chip-green.sel  { background: #2E7D32; color: #fff; border-color: #2E7D32; }
+    .chip-purple.sel { background: #6A1B9A; color: #fff; border-color: #6A1B9A; }
+    .chip-brown.sel  { background: #5D4037; color: #fff; border-color: #5D4037; }
+    .chip-pink.sel   { background: #e349c7; color: #fff; border-color: #de73bc; }
 
     /* ── Buttons ── */
     .btn-primary {
-      width: 100%;
-      padding: 15px;
-      background: #1565C0;
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      width: 100%; padding: 15px; background: #1565C0; color: #fff;
+      border: none; border-radius: 14px; font-family: 'Nunito', sans-serif;
+      font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.2s;
     }
-
-    .btn-primary:hover {
-      background: #0D47A1;
-    }
-
-    .btn-primary i {
-      font-size: 20px;
-    }
-
+    .btn-primary:hover { background: #0D47A1; }
+    .btn-primary i { font-size: 20px; }
     .divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 2px 0;
+      display: flex; align-items: center; gap: 10px; margin: 2px 0;
     }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #E3F2FD;
-    }
-
-    .divider span {
-      font-size: 12px;
-      color: #90A4AE;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #E3F2FD; }
+    .divider span { font-size: 12px; color: #90A4AE; font-weight: 600; white-space: nowrap; }
     .btn-secondary {
-      width: 100%;
-      padding: 13px;
-      background: #E3F2FD;
-      color: #1565C0;
-      border: 2px solid #BBDEFB;
-      border-radius: 14px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      width: 100%; padding: 13px; background: #E3F2FD; color: #1565C0;
+      border: 2px solid #BBDEFB; border-radius: 14px; font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.2s;
     }
-
-    .btn-secondary:hover {
-      background: #BBDEFB;
-    }
+    .btn-secondary:hover { background: #BBDEFB; }
 
     /* ── Panels ── */
-    .panel {
-      display: none;
-    }
+    .panel { display: none; }
+    .panel.active { display: block; }
 
-    .panel.active {
-      display: block;
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 50000;
+      align-items: center; justify-content: center;
+      padding: 20px;
     }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 24px;
+      padding: 32px; width: 100%; max-width: 460px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 6px;
+    }
+    .modal-title { font-family: 'Fredoka One', cursive; color: #1565C0; font-size: 22px; }
+    .modal-sub { font-size: 13px; color: #90A4AE; margin-bottom: 20px; }
+    .modal-close {
+      background: none; border: none; font-size: 22px;
+      color: #90A4AE; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: #E53935; }
+    .modal-form { display: flex; flex-direction: column; gap: 16px; }
+    .modal-alert {
+      padding: 10px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 700; display: none;
+    }
+    .modal-alert.error   { display: block; background: #FFEBEE; color: #C62828; }
+    .modal-alert.success { display: block; background: #E8F5E9; color: #1B5E20; }
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      .main {
-        flex-direction: column;
-      }
-
-      .left {
-        padding: 32px 24px;
-      }
-
-      .right {
-        border-radius: 28px 28px 0 0;
-        padding: 32px 24px;
-      }
-
-      .headline {
-        font-size: 28px;
-      }
+      .main { flex-direction: column; }
+      .left { padding: 32px 24px; }
+      .right { border-radius: 28px 28px 0 0; padding: 32px 24px; }
+      .headline { font-size: 28px; }
     }
   </style>
 </head>
@@ -614,9 +256,8 @@
 
     <!-- Left: apresentação -->
     <section class="left">
-      <h1 class="headline">Aprender é para<br><span>todos!</span> </h1>
-      <p class="desc">A plataforma pensada para alunos com PCD que têm dificuldades no aprendizado. Aqui, cada criança
-        aprende no seu ritmo, com atividades adaptadas e cheias de cor!</p>
+      <h1 class="headline">Aprender é para<br><span>todos!</span></h1>
+      <p class="desc">A plataforma pensada para alunos com PCD que têm dificuldades no aprendizado. Aqui, cada criança aprende no seu ritmo, com atividades adaptadas e cheias de cor!</p>
 
       <div class="features">
         <div class="feat">
@@ -640,7 +281,6 @@
             <span class="feat-sub">Áudio, imagens grandes, cores contrastantes e leitura em voz alta</span>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -657,22 +297,19 @@
         </button>
       </div>
 
-      <!-- Painel aluno -->
+      <!-- ── Painel aluno ── -->
       <div class="panel active" id="panel-aluno" role="tabpanel">
         <p class="form-title">Olá, aluno! </p>
         <p class="form-sub">Entre com seu e-mail e senha para continuar aprendendo</p>
 
         <form class="form" id="form-login-aluno">
-
           <div>
             <label class="label" for="aluno-email">
               <i class="ti ti-mail" style="color:#E53935"></i> E-mail
             </label>
-
             <div class="input-wrap">
               <i class="ti ti-mail field-icon"></i>
-              <input class="ei-input" id="aluno-email" type="email" placeholder="seuemail@escola.com"
-                autocomplete="email" />
+              <input class="ei-input" id="aluno-email" type="email" placeholder="seuemail@escola.com" autocomplete="email" />
             </div>
           </div>
 
@@ -680,11 +317,9 @@
             <label class="label" for="aluno-senha">
               <i class="ti ti-lock" style="color:#2E7D32"></i> Senha
             </label>
-
             <div class="input-wrap">
               <i class="ti ti-lock field-icon"></i>
-              <input class="ei-input" id="aluno-senha" type="password" placeholder="••••••••"
-                autocomplete="current-password" />
+              <input class="ei-input" id="aluno-senha" type="password" placeholder="••••••••" autocomplete="current-password" />
             </div>
           </div>
 
@@ -692,13 +327,12 @@
             <div class="label">
               <i class="ti ti-accessibility" style="color:#6A1B9A"></i> Tipo de necessidade
             </div>
-
             <div class="pcd-row" role="group">
-              <button type="button" class="pcd-chip chip-red" onclick="toggleChip(this)">Visual</button>
-              <button type="button" class="pcd-chip chip-green" onclick="toggleChip(this)">Auditiva</button>
+              <button type="button" class="pcd-chip chip-red"    onclick="toggleChip(this)">Visual</button>
+              <button type="button" class="pcd-chip chip-green"  onclick="toggleChip(this)">Auditiva</button>
               <button type="button" class="pcd-chip chip-purple" onclick="toggleChip(this)">Cognitiva</button>
-              <button type="button" class="pcd-chip chip-brown" onclick="toggleChip(this)">Física</button>
-              <button type="button" class="pcd-chip chip-pink" onclick="toggleChip(this)">Outro</button>
+              <button type="button" class="pcd-chip chip-brown"  onclick="toggleChip(this)">Física</button>
+              <button type="button" class="pcd-chip chip-pink"   onclick="toggleChip(this)">Outro</button>
             </div>
           </div>
 
@@ -706,15 +340,64 @@
             <i class="ti ti-login"></i> Entrar e aprender!
           </button>
 
-          <div class="divider">
-            <span>ainda não tem conta?</span>
-          </div>
+          <div class="divider"><span>ainda não tem conta?</span></div>
 
-          <button type="button" class="btn-secondary">
+          <button type="button" class="btn-secondary" onclick="abrirModalCadastroAluno()">
             <i class="ti ti-user-plus"></i> Criar conta de aluno
           </button>
+        </form>
+      </div>
 
+      <!-- ── Painel professor/responsável ── -->
+      <div class="panel" id="panel-resp" role="tabpanel">
+        <p class="form-title">Área do educador</p>
+        <p class="form-sub">Acesse os perfis e o progresso dos seus alunos</p>
 
+        <form class="form" id="form-login-prof">
+          <div>
+            <label class="label" for="resp-tipo">
+              <i class="ti ti-id-badge" style="color:#E53935"></i> Tipo de acesso
+            </label>
+            <div class="input-wrap">
+              <i class="ti ti-id-badge field-icon"></i>
+              <select class="ei-select" id="resp-tipo">
+                <option>Professor(a)</option>
+                <option>Responsável / Familiar</option>
+                <option>Coordenador(a)</option>
+                <option>Apoio / Cuidador</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="label" for="resp-email">
+              <i class="ti ti-mail" style="color:#0288D1"></i> E-mail institucional
+            </label>
+            <div class="input-wrap">
+              <i class="ti ti-mail field-icon"></i>
+              <input class="ei-input" id="resp-email" type="email" placeholder="professor@escola.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div>
+            <label class="label" for="resp-senha">
+              <i class="ti ti-lock" style="color:#6A1B9A"></i> Senha
+            </label>
+            <div class="input-wrap">
+              <i class="ti ti-lock field-icon"></i>
+              <input class="ei-input" id="resp-senha" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <i class="ti ti-dashboard"></i> Acessar painel
+          </button>
+
+          <div class="divider"><span>primeira vez aqui?</span></div>
+
+          <button type="button" class="btn-secondary" onclick="abrirModalCadastroInstitucional()">
+            <i class="ti ti-user-plus"></i> Solicitar cadastro institucional
+          </button>
         </form>
       </div>
 
@@ -725,105 +408,170 @@
           <div class="vw-plugin-top-wrapper"></div>
         </div>
       </div>
-
       <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-
-      <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-      </script>
+      <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 
       <!-- BOTÃO DE ACESSIBILIDADE -->
-      <div class="accessibility-button" onclick="toggleMenu()">
-        🧩
-      </div>
+      <div class="accessibility-button" onclick="toggleMenu()">🧩</div>
 
-      <!-- MENU -->
+      <!-- MENU ACESSIBILIDADE -->
       <div class="accessibility-menu" id="menuAcessibilidade">
-
         <h2>Acessibilidade</h2>
-
         <button onclick="increaseFont()">A+ Aumentar Fonte</button>
-
         <button onclick="decreaseFont()">A- Diminuir Fonte</button>
-
         <button onclick="toggleContrast()">🎨 Alto Contraste</button>
-
         <button onclick="toggleDyslexia()">📖 Fonte Dislexia</button>
-
         <button onclick="zoomPage()">🔍 Zoom</button>
-
         <button onclick="speakText()">🔊 Ler Texto</button>
-
         <button onclick="toggleTDAH()">🧠 Modo TDAH</button>
-
         <button onclick="toggleGuide()">📏 Guia de Leitura</button>
-
       </div>
 
       <!-- GUIA DE LEITURA -->
       <div id="reading-guide"></div>
 
-      <!-- Painel professor/responsável -->
-      <div class="panel" id="panel-resp" role="tabpanel">
-        <p class="form-title">Área do educador</p>
-        <p class="form-sub">Acesse os perfis e o progresso dos seus alunos</p>
-
-        <form class="form" id="form-login-prof">
-          <div>
-            <label class="label" for="resp-tipo">
-              <i class="ti ti-id-badge" aria-hidden="true" style="color:#E53935"></i> Tipo de acesso
-            </label>
-            <div class="input-wrap">
-              <i class="ti ti-id-badge field-icon" aria-hidden="true"></i>
-              <select class="ei-select" id="resp-tipo">
-                <option>Professor(a)</option>
-                <option>Responsável / Familiar</option>
-                <option>Coordenador(a)</option>
-                <option>Apoio / cuidador</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="label" for="resp-email">
-              <i class="ti ti-mail" aria-hidden="true" style="color:#0288D1"></i> E-mail institucional
-            </label>
-            <div class="input-wrap">
-              <i class="ti ti-mail field-icon" aria-hidden="true"></i>
-              <input class="ei-input" id="resp-email" type="email" placeholder="professor@escola.com"
-                autocomplete="email" />
-            </div>
-          </div>
-
-          <div>
-            <label class="label" for="resp-senha">
-              <i class="ti ti-lock" aria-hidden="true" style="color:#6A1B9A"></i> Senha
-            </label>
-            <div class="input-wrap">
-              <i class="ti ti-lock field-icon" aria-hidden="true"></i>
-              <input class="ei-input" id="resp-senha" type="password" placeholder="••••••••"
-                autocomplete="current-password" />
-            </div>
-          </div>
-
-          <button type="submit" class="btn-primary">
-            <i class="ti ti-dashboard" aria-hidden="true"></i> Acessar painel
-          </button>
-
-          <div class="divider"><span>primeira vez aqui?</span></div>
-
-          <button type="button" class="btn-secondary">
-            <i class="ti ti-user-plus" aria-hidden="true"></i> Solicitar cadastro institucional
-          </button>
-        </form>
-      </div>
-
     </section>
   </main>
 
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: Criar conta de aluno
+  ═══════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-aluno">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">🧒 Criar conta de aluno</span>
+        <button class="modal-close" onclick="fecharModalAluno()">✕</button>
+      </div>
+      <p class="modal-sub">Preencha os dados para criar sua conta na plataforma</p>
+      <div id="alerta-aluno" class="modal-alert"></div>
+      <div class="modal-form" id="form-cadastro-aluno">
+
+        <div>
+          <label class="label" for="ca-nome"><i class="ti ti-user" style="color:#1565C0"></i> Nome completo</label>
+          <div class="input-wrap">
+            <i class="ti ti-user field-icon"></i>
+            <input class="ei-input" id="ca-nome" type="text" placeholder="Seu nome completo" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-email"><i class="ti ti-mail" style="color:#E53935"></i> E-mail</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail field-icon"></i>
+            <input class="ei-input" id="ca-email" type="email" placeholder="seuemail@exemplo.com" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> Número do RG</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge field-icon"></i>
+            <input class="ei-input" id="ca-rg" type="text" placeholder="00.000.000-0" maxlength="15" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-senha"><i class="ti ti-lock" style="color:#2E7D32"></i> Criar senha</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock field-icon"></i>
+            <input class="ei-input" id="ca-senha" type="password" placeholder="Mínimo 6 caracteres" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-senha2"><i class="ti ti-lock-check" style="color:#2E7D32"></i> Confirmar senha</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock-check field-icon"></i>
+            <input class="ei-input" id="ca-senha2" type="password" placeholder="Repita a senha" />
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="cadastrarAluno()">
+          <i class="ti ti-user-plus"></i> Criar minha conta!
+        </button>
+        <button type="button" class="btn-secondary" onclick="fecharModalAluno()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: Solicitar cadastro institucional
+  ═══════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-institucional">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">🏫 Cadastro Institucional</span>
+        <button class="modal-close" onclick="fecharModalInstitucional()">✕</button>
+      </div>
+      <p class="modal-sub">Preencha seus dados para solicitar acesso à plataforma</p>
+      <div id="alerta-inst" class="modal-alert"></div>
+      <div class="modal-form" id="form-cadastro-inst">
+
+        <div>
+          <label class="label" for="ci-nome"><i class="ti ti-user" style="color:#1565C0"></i> Nome completo</label>
+          <div class="input-wrap">
+            <i class="ti ti-user field-icon"></i>
+            <input class="ei-input" id="ci-nome" type="text" placeholder="Seu nome completo" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-tipo"><i class="ti ti-id-badge" style="color:#E53935"></i> Tipo de acesso</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge field-icon"></i>
+            <select class="ei-select" id="ci-tipo">
+              <option value="professor">Professor(a)</option>
+              <option value="responsavel">Responsável / Familiar</option>
+              <option value="coordenador">Coordenador(a)</option>
+              <option value="apoio">Apoio / Cuidador</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-email"><i class="ti ti-mail" style="color:#0288D1"></i> E-mail institucional</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail field-icon"></i>
+            <input class="ei-input" id="ci-email" type="email" placeholder="seuemail@escola.com" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> Número do RG</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge field-icon"></i>
+            <input class="ei-input" id="ci-rg" type="text" placeholder="00.000.000-0" maxlength="15" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-senha"><i class="ti ti-lock" style="color:#2E7D32"></i> Criar senha</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock field-icon"></i>
+            <input class="ei-input" id="ci-senha" type="password" placeholder="Mínimo 6 caracteres" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-senha2"><i class="ti ti-lock-check" style="color:#2E7D32"></i> Confirmar senha</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock-check field-icon"></i>
+            <input class="ei-input" id="ci-senha2" type="password" placeholder="Repita a senha" />
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="cadastrarInstitucional()">
+          <i class="ti ti-send"></i> Solicitar cadastro
+        </button>
+        <button type="button" class="btn-secondary" onclick="fecharModalInstitucional()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
-
 </body>
-
 </html>

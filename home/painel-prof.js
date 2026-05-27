@@ -1,21 +1,46 @@
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-// Se não está logado ou não é professor/responsável, volta pro login
-if (!usuario || usuario.tipo === "aluno") {
+// ── VERIFICAÇÃO DE PERMISSÃO ──
+// Apenas professor, coordenador e apoio podem acessar esta página.
+// Aluno e responsável são bloqueados.
+const tiposPermitidosProf = ["professor", "coordenador", "apoio"];
+
+if (!usuario) {
+    window.location.href = "index.html";
+} else if (usuario.tipo === "aluno") {
+    // Aluno tenta acessar o painel do professor
+    localStorage.setItem("_acesso_negado",
+        JSON.stringify({
+            motivo: `Sua conta é de aluno. Esta área é exclusiva para educadores.`,
+            destino: "painel.html",
+            label:   "Ir para meu painel de aluno"
+        })
+    );
+    window.location.href = "acesso-negado.html";
+} else if (usuario.tipo === "responsavel") {
+    // Responsável redireciona para o painel correto
+    window.location.href = "painel-responsavel.html";
+} else if (!tiposPermitidosProf.includes(usuario.tipo)) {
     window.location.href = "index.html";
 }
 
 // ── Avatares por tipo ──
 const avatares = {
-    "professor": "👨‍🏫",
-    "responsavel": "👨‍👩‍👧",
-    "coordenador": "🏫",
-    "terapeuta": "🩺"
+    professor:   "👨‍🏫",
+    responsavel: "👨‍👩‍👧",
+    coordenador: "🏫",
+    apoio:       "🩺"
 };
 
 // ── Preenche hero ──
 document.getElementById("hero-nome").textContent = "Olá, " + usuario.nome + "!";
-document.getElementById("tipo-texto").textContent = usuario.tipo.charAt(0).toUpperCase() + usuario.tipo.slice(1);
+
+const nomesTipo = {
+    professor:   "Professor(a)",
+    coordenador: "Coordenador(a)",
+    apoio:       "Apoio / Cuidador"
+};
+document.getElementById("tipo-texto").textContent = nomesTipo[usuario.tipo] || usuario.tipo;
 
 const avatar = avatares[usuario.tipo] || "👤";
 document.getElementById("hero-avatar").textContent = avatar;
@@ -28,26 +53,36 @@ let todosAlunos = [];
 async function carregarAlunos() {
     try {
         const resposta = await fetch(`http://localhost:3000/alunos/${usuario.id}`);
-        const dados = await resposta.json();
+        const dados    = await resposta.json();
 
         if (resposta.ok) {
             todosAlunos = dados.alunos;
             renderizarCards(todosAlunos);
             atualizarStats(todosAlunos);
         } else {
-            document.getElementById("cards-container").innerHTML = `
-                <div class="empty">
-                    <i class="ti ti-mood-sad"></i>
-                    <p>Erro ao carregar alunos.</p>
-                </div>`;
+            usarDadosDemo();
         }
-    } catch (erro) {
-        document.getElementById("cards-container").innerHTML = `
-            <div class="empty">
-                <i class="ti ti-wifi-off"></i>
-                <p>Sem conexão com o servidor.</p>
-            </div>`;
+    } catch (_) {
+        usarDadosDemo();
     }
+}
+
+function usarDadosDemo() {
+    const demo = [
+        { id: 1, nome: "Ana Paula",    email: "ana@escola.com",   condicao: "Visual",    nivel: 3, pontos: 320, progresso: 65 },
+        { id: 2, nome: "Carlos Souza", email: "carlos@escola.com", condicao: "Cognitiva", nivel: 2, pontos: 180, progresso: 38 },
+        { id: 3, nome: "Bruna Melo",   email: "bruna@escola.com",  condicao: "Auditiva",  nivel: 4, pontos: 510, progresso: 72 }
+    ];
+    todosAlunos = demo;
+    renderizarCards(demo);
+    atualizarStats(demo);
+
+    // Avisa que é modo demo
+    const container = document.getElementById("cards-container");
+    const aviso = document.createElement("div");
+    aviso.style.cssText = "grid-column:1/-1;background:#FFF9C4;border-radius:12px;padding:12px 16px;color:#F57F17;font-weight:700;font-size:13px;margin-bottom:8px;";
+    aviso.textContent = "⚠️ Servidor offline — exibindo dados de exemplo.";
+    container.prepend(aviso);
 }
 
 // ── Renderiza os cards ──
@@ -64,10 +99,11 @@ function renderizarCards(alunos) {
     }
 
     container.innerHTML = alunos.map((aluno, i) => {
-        const cor = avatarCores[i % avatarCores.length];
-        const condicao = aluno.condicao || "Nenhuma";
-        const badgeClass = "badge-" + condicao.toLowerCase().replace("ã", "a").replace("í", "i");
-        const progresso = aluno.progresso || 0;
+        const cor        = avatarCores[i % avatarCores.length];
+        const condicao   = aluno.condicao || "Nenhuma";
+        const badgeClass = "badge-" + condicao.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const progresso  = aluno.progresso || 0;
 
         return `
         <div class="aluno-card">
@@ -108,12 +144,12 @@ function renderizarCards(alunos) {
 // ── Ícones por condição ──
 function iconeCondicao(condicao) {
     const icons = {
-        "Nenhuma": "✅",
-        "Visual": "👁️",
+        "Nenhuma":  "✅",
+        "Visual":   "👁️",
         "Auditiva": "👂",
-        "Cognitiva": "🧠",
-        "Física": "♿",
-        "Outro": "⭐"
+        "Cognitiva":"🧠",
+        "Física":   "♿",
+        "Outro":    "⭐"
     };
     return icons[condicao] || "⭐";
 }
@@ -132,11 +168,11 @@ function atualizarStats(alunos) {
 
 // ── Filtro de busca e condição ──
 function filtrar() {
-    const busca = document.getElementById("busca").value.toLowerCase();
+    const busca    = document.getElementById("busca").value.toLowerCase();
     const condicao = document.getElementById("filtro-condicao").value;
 
     const filtrados = todosAlunos.filter(a => {
-        const nomeBate = a.nome.toLowerCase().includes(busca);
+        const nomeBate     = a.nome.toLowerCase().includes(busca);
         const condicaoBate = condicao === "" || (a.condicao || "Nenhuma") === condicao;
         return nomeBate && condicaoBate;
     });
@@ -166,24 +202,20 @@ async function confirmarAdicionar() {
 
     try {
         const resposta = await fetch("http://localhost:3000/adicionar-aluno", {
-            method: "POST",
+            method:  "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                professorId: usuario.id,
-                emailAluno: email
-            })
+            body:    JSON.stringify({ professorId: usuario.id, emailAluno: email })
         });
 
         const dados = await resposta.json();
 
         if (resposta.ok) {
             mostrarAlerta("✅ Aluno adicionado com sucesso!", "success");
-            fecharModal();
-            carregarAlunos(); // Recarrega a lista
+            setTimeout(() => { fecharModal(); carregarAlunos(); }, 1500);
         } else {
             mostrarAlerta(dados.mensagem || "Erro ao adicionar aluno", "error");
         }
-    } catch (erro) {
+    } catch (_) {
         mostrarAlerta("Erro ao conectar ao servidor", "error");
     }
 }
@@ -192,7 +224,7 @@ async function confirmarAdicionar() {
 function mostrarAlerta(mensagem, tipo) {
     const alerta = document.getElementById("alerta");
     alerta.textContent = mensagem;
-    alerta.className = "alert " + tipo;
+    alerta.className   = "alert " + tipo;
 
     if (tipo === "success") {
         setTimeout(() => limparAlerta(), 3000);
@@ -205,9 +237,7 @@ function limparAlerta() {
 
 // ── Fechar modal ao clicar fora ──
 document.getElementById("modalAdicionar").addEventListener("click", (e) => {
-    if (e.target.id === "modalAdicionar") {
-        fecharModal();
-    }
+    if (e.target.id === "modalAdicionar") fecharModal();
 });
 
 // ── Sair ──
