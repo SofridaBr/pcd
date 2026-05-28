@@ -12,26 +12,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Nunito', sans-serif; background: #F0F6FF; min-height: 100vh; }
 
-        /* ── TELA DE ACESSO NEGADO ── */
-        .acesso-negado {
-            display: none; position: fixed; inset: 0;
-            background: #fff; z-index: 99999;
-            flex-direction: column; align-items: center; justify-content: center;
-            gap: 16px; padding: 40px; text-align: center;
-        }
-        .acesso-negado.ativo { display: flex; }
-        .acesso-negado .icon { font-size: 80px; }
-        .acesso-negado h1 { font-family: 'Fredoka One', cursive; color: #B71C1C; font-size: 30px; }
-        .acesso-negado p { color: #546E7A; font-size: 15px; max-width: 400px; line-height: 1.7; }
-        .acesso-negado .redirect-info { font-size: 13px; color: #90A4AE; margin-top: 4px; }
-        .acesso-negado button {
-            margin-top: 8px;
-            background: #1565C0; color: #fff; border: none;
-            padding: 14px 28px; border-radius: 14px;
-            font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px;
-            cursor: pointer;
-        }
-
         .topbar {
             background: #0D47A1; padding: 14px 40px;
             display: flex; align-items: center; justify-content: space-between;
@@ -80,11 +60,11 @@
         .progress-bar { width:100%;height:18px;background:#E3F2FD;border-radius:10px;overflow:hidden; }
         .progress-fill { height:100%;background:linear-gradient(90deg,#1565C0,#42A5F5);border-radius:10px;transition:width 1.2s cubic-bezier(.4,0,.2,1); }
 
-        .cards-row { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px; }
+        .cards-row { display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px;margin-bottom:28px; }
         .info-card { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD;text-align:center;transition:transform 0.2s; }
         .info-card:hover { transform:translateY(-3px); }
         .card-icon { font-size:36px;margin-bottom:10px; }
-        .card-valor { font-family:'Fredoka One',cursive;color:#1565C0;font-size:30px; }
+        .card-valor { font-family:'Fredoka One',cursive;color:#1565C0;font-size:28px; }
         .card-label { color:#90A4AE;font-size:12px;font-weight:600;margin-top:4px; }
 
         .dicas-box { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD; }
@@ -93,8 +73,6 @@
         .dica-icon { width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
         .dica-texto strong { display:block;color:#1565C0;font-size:14px;margin-bottom:2px; }
         .dica-texto span { color:#90A4AE;font-size:13px; }
-
-        .error-state { text-align:center;padding:40px 20px;background:#FFEBEE;border-radius:16px;color:#C62828;font-weight:700; }
 
         @media (max-width:768px) {
             .hero { margin:16px;flex-direction:column; }
@@ -105,15 +83,6 @@
     </style>
 </head>
 <body>
-
-<!-- TELA DE ACESSO NEGADO -->
-<div class="acesso-negado" id="acesso-negado">
-    <div class="icon">🚫</div>
-    <h1>Acesso não permitido</h1>
-    <p id="msg-negado">Você não tem permissão para acessar esta área.</p>
-    <p class="redirect-info">Redirecionando em 3 segundos...</p>
-    <button onclick="irParaPainelCorreto()">Ir para meu painel agora</button>
-</div>
 
 <header class="topbar">
     <div class="topbar-left">
@@ -143,19 +112,6 @@
 <script>
     const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
 
-    // Mapa de destinos por tipo
-    const destinosPorTipo = {
-        professor:   "painel-prof.html",
-        responsavel: "painel-responsavel.html",
-        coordenador: "painel-coordenador.html",
-        apoio:       "painel-prof.html"
-    };
-
-    function irParaPainelCorreto() {
-        if (!usuarioLocal) { window.location.href = "index.html"; return; }
-        window.location.href = destinosPorTipo[usuarioLocal.tipo] || "index.html";
-    }
-
     // ── VERIFICAÇÃO DE PERMISSÃO ──
     if (!usuarioLocal) {
         window.location.href = "index.html";
@@ -166,54 +122,18 @@
             coordenador: "Coordenador(a)",
             apoio:       "Apoio / Cuidador"
         };
-        const tela    = document.getElementById("acesso-negado");
-        const msgEl   = document.getElementById("msg-negado");
-        msgEl.textContent =
-            `Sua conta é do tipo "${nomesTipo[usuarioLocal.tipo] || usuarioLocal.tipo}". ` +
-            `Esta área é exclusiva para alunos. Você será redirecionado ao seu painel.`;
-        tela.classList.add("ativo");
-
-        setTimeout(() => {
-            window.location.href = destinosPorTipo[usuarioLocal.tipo] || "index.html";
-        }, 3000);
+        alert(`Sua conta é do tipo "${nomesTipo[usuarioLocal.tipo] || usuarioLocal.tipo}". Esta área é exclusiva para alunos.`);
+        window.location.href = "index.html";
     }
 
     // Configurações visuais por condição
     const condicaoConfig = {
-        "Nenhuma":   { cls:"cond-nenhuma",  icon:"✅", avatar:"🧒", dicas:[] },
-        "Visual":    { cls:"cond-visual",   icon:"👁️", avatar:"🧒",
-            dicas:[
-                { i:"🔊", bg:"#FFEBEE", titulo:"Leitor de tela ativo",  sub:"Use Alt+Shift+S para ouvir qualquer texto da tela" },
-                { i:"🔍", bg:"#FFEBEE", titulo:"Zoom disponível",        sub:"Pressione Ctrl++ para ampliar o conteúdo" },
-                { i:"🎨", bg:"#FFEBEE", titulo:"Alto contraste",         sub:"Ative no menu de acessibilidade para melhor visualização" }
-            ]
-        },
-        "Auditiva":  { cls:"cond-auditiva", icon:"👂", avatar:"🧒",
-            dicas:[
-                { i:"📝", bg:"#E8F5E9", titulo:"Legendas sempre visíveis", sub:"Todo conteúdo de áudio possui legenda automática" },
-                { i:"🤟", bg:"#E8F5E9", titulo:"Libras disponível",         sub:"Use o botão VLibras para tradução em Libras" },
-                { i:"💡", bg:"#E8F5E9", titulo:"Alertas visuais",           sub:"Notificações por animação e cor, sem depender de som" }
-            ]
-        },
-        "Cognitiva": { cls:"cond-cognitiva", icon:"🧠", avatar:"🧒",
-            dicas:[
-                { i:"🎯", bg:"#F3E5F5", titulo:"Atividades simplificadas", sub:"Exercícios com passos curtos e claros para você" },
-                { i:"⏸️", bg:"#F3E5F5", titulo:"Modo TDAH",               sub:"Ative no menu para reduzir distrações visuais" },
-                { i:"📖", bg:"#F3E5F5", titulo:"Fonte dislexia",           sub:"Ative no menu para facilitar a leitura" }
-            ]
-        },
-        "Física":    { cls:"cond-fisica",   icon:"♿", avatar:"🧒",
-            dicas:[
-                { i:"⌨️", bg:"#EFEBE9", titulo:"Navegação por teclado", sub:"Use Tab e Enter para navegar sem mouse" },
-                { i:"🔲", bg:"#EFEBE9", titulo:"Áreas de clique amplas", sub:"Todos os botões têm área extra de toque" },
-                { i:"🎙️", bg:"#EFEBE9", titulo:"Comando por voz",       sub:"Em breve: controle a plataforma com sua voz" }
-            ]
-        },
-        "Outro":     { cls:"cond-outro",    icon:"⭐", avatar:"🧒",
-            dicas:[
-                { i:"🛠️", bg:"#FFF3E0", titulo:"Adaptações personalizadas", sub:"Seu professor pode configurar recursos especiais para você" }
-            ]
-        }
+        "Nenhuma":   { cls:"cond-nenhuma",  icon:"✅", avatar:"🧒" },
+        "Visual":    { cls:"cond-visual",   icon:"👁️", avatar:"🧒" },
+        "Auditiva":  { cls:"cond-auditiva", icon:"👂", avatar:"🧒" },
+        "Cognitiva": { cls:"cond-cognitiva", icon:"🧠", avatar:"🧒" },
+        "Física":    { cls:"cond-fisica",   icon:"♿", avatar:"🧒" },
+        "Outro":     { cls:"cond-outro",    icon:"⭐", avatar:"🧒" }
     };
 
     async function carregarDadosAluno() {
@@ -222,30 +142,22 @@
             const dados = await res.json();
 
             if (!res.ok) {
-                // Usa dados do localStorage como fallback
                 renderizarPainel(usuarioLocal);
                 return;
             }
 
-            // Mescla dados do servidor com condicao do localStorage (selecionada no login)
             const aluno = {
                 ...dados.aluno,
                 condicao: usuarioLocal.condicao || dados.aluno.condicao || "Nenhuma"
             };
-            // Atualiza localStorage com dados frescos
             localStorage.setItem("usuario", JSON.stringify({ ...usuarioLocal, ...aluno }));
             renderizarPainel(aluno);
 
         } catch {
-            // Servidor offline: usa localStorage
             if (usuarioLocal.nome) {
                 renderizarPainel(usuarioLocal);
             } else {
-                document.getElementById("conteudo-principal").innerHTML = `
-                    <div class="error-state">
-                        <i class="ti ti-wifi-off" style="font-size:48px;display:block;margin-bottom:12px"></i>
-                        Sem conexão com o servidor. Faça login novamente.
-                    </div>`;
+                document.getElementById("conteudo-principal").innerHTML = `<div style="color:#C62828;font-weight:700;text-align:center;padding:60px">Erro ao carregar dados. Faça login novamente.</div>`;
             }
         }
     }
@@ -255,11 +167,19 @@
         const nivel     = aluno.nivel     || 1;
         const pontos    = aluno.pontos    || 0;
         const progresso = aluno.progresso || 0;
+        
+        // Novos campos
+        const cpf       = aluno.cpf       || "Não informado";
         const rg        = aluno.rg        || "Não informado";
+        const telefone  = aluno.telefone  || "Não informado";
+        const serie     = aluno.serie     || "Não informado";
+        const tipoEscola = aluno.tipoEscola || "Não informado";
+        const nivelAutismo = aluno.nivelAutismo || 0;
+        
         const email     = aluno.email     || usuarioLocal.email || "—";
         const nome      = aluno.nome      || usuarioLocal.nome  || "Aluno";
 
-        // Normaliza chave de condicao (pode vir "Física" ou "Fisica")
+        // Normaliza chave de condição
         const cfgKey = Object.keys(condicaoConfig).find(k =>
             k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") ===
             condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -276,21 +196,17 @@
         document.getElementById("stat-pontos").textContent   = "🏆 " + pontos;
         document.getElementById("stat-progresso").textContent = progresso + "%";
 
-        const dicasHTML = cfg.dicas.length > 0 ? `
-            <div class="section-title" style="margin-top:8px">
-                <i class="ti ti-bulb" style="color:#1565C0"></i> Recursos para você
-            </div>
-            <div class="dicas-box">
-                ${cfg.dicas.map(d => `
-                    <div class="dica-item">
-                        <div class="dica-icon" style="background:${d.bg}">${d.i}</div>
-                        <div class="dica-texto"><strong>${d.titulo}</strong><span>${d.sub}</span></div>
-                    </div>`).join("")}
-            </div>` : "";
+        // Descrição do nível de autismo
+        const autismoDesc = {
+            0: { titulo: "Sem diagnóstico TEA", texto: "Não há indicação de Transtorno do Espectro Autista." },
+            1: { titulo: "Nível 1 – Suporte Leve", texto: "Suporte leve com algumas dificuldades de comunicação." },
+            2: { titulo: "Nível 2 – Suporte Moderado", texto: "Suporte moderado com dificuldades marcantes." }
+        };
+        const descAutismo = autismoDesc[nivelAutismo] || autismoDesc[0];
 
         document.getElementById("conteudo-principal").innerHTML = `
             <div class="section-title">
-                <i class="ti ti-id-badge" style="color:#1565C0"></i> Meus Dados
+                <i class="ti ti-id-badge" style="color:#1565C0"></i> Meus Dados Pessoais
             </div>
 
             <div class="dados-card">
@@ -311,14 +227,42 @@
                 <div class="dado-row">
                     <div class="dado-icon">🪪</div>
                     <div class="dado-info">
+                        <strong>CPF</strong>
+                        <span>${cpf}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">📋</div>
+                    <div class="dado-info">
                         <strong>RG</strong>
                         <span>${rg}</span>
                     </div>
                 </div>
                 <div class="dado-row">
+                    <div class="dado-icon">📱</div>
+                    <div class="dado-info">
+                        <strong>Telefone</strong>
+                        <span>${telefone}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">📚</div>
+                    <div class="dado-info">
+                        <strong>Série/Ano</strong>
+                        <span>${serie}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
+                    <div class="dado-icon">🏫</div>
+                    <div class="dado-info">
+                        <strong>Tipo de Escola</strong>
+                        <span>${tipoEscola}</span>
+                    </div>
+                </div>
+                <div class="dado-row">
                     <div class="dado-icon">${cfg.icon}</div>
                     <div class="dado-info">
-                        <strong>Necessidade registrada</strong>
+                        <strong>Necessidade Especial</strong>
                         <span>${condicao}</span>
                     </div>
                 </div>
@@ -337,7 +281,7 @@
                 </div>
             </div>
 
-            <div class="section-title" style="margin-top:8px">
+            <div class="section-title">
                 <i class="ti ti-star" style="color:#1565C0"></i> Minhas Conquistas
             </div>
 
@@ -350,21 +294,30 @@
                 <div class="info-card">
                     <div class="card-icon">🏆</div>
                     <div class="card-valor">${pontos}</div>
-                    <div class="card-label">Pontos conquistados</div>
+                    <div class="card-label">Pontos</div>
                 </div>
                 <div class="info-card">
                     <div class="card-icon">📊</div>
                     <div class="card-valor">${progresso}%</div>
-                    <div class="card-label">Progresso geral</div>
+                    <div class="card-label">Progresso</div>
                 </div>
                 <div class="info-card">
-                    <div class="card-icon">${cfg.icon}</div>
-                    <div class="card-valor" style="font-size:18px">${condicao}</div>
-                    <div class="card-label">Minha condição</div>
+                    <div class="card-icon">🧩</div>
+                    <div class="card-valor" style="font-size:16px">${descAutismo.titulo.split('–')[0].trim()}</div>
+                    <div class="card-label">Autismo</div>
                 </div>
             </div>
 
-            ${dicasHTML}
+            <div class="section-title">
+                <i class="ti ti-brain" style="color:#6A1B9A"></i> Nível de Suporte
+            </div>
+
+            <div class="dados-card">
+                <div style="padding:16px 0;">
+                    <strong style="color:#1565C0;display:block;margin-bottom:8px;font-size:16px">${descAutismo.titulo}</strong>
+                    <span style="color:#546E7A;line-height:1.6;">${descAutismo.texto}</span>
+                </div>
+            </div>
         `;
 
         setTimeout(() => {
@@ -378,7 +331,6 @@
         window.location.href = "index.html";
     }
 
-    // Só carrega se for aluno de verdade
     if (usuarioLocal && usuarioLocal.tipo === "aluno") {
         carregarDadosAluno();
     }

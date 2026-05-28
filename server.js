@@ -30,7 +30,8 @@ app.post("/login", (req, res) => {
     }
 
     const sql = `
-        SELECT id, nome, email, tipo, nivel, pontos, progresso, condicao, rg, nivelAutismo
+        SELECT id, nome, email, tipo, nivel, pontos, progresso, condicao, 
+               cpf, rg, telefone, serie, tipoEscola, disciplina, nivelAutismo
         FROM usuarios
         WHERE email = ? AND senha = ?
     `;
@@ -50,9 +51,9 @@ app.post("/login", (req, res) => {
 // CADASTRO DE ALUNO (auto-registro)
 // ════════════════════════════════════════════════
 app.post("/cadastro/aluno", (req, res) => {
-    const { nome, email, rg, senha } = req.body;
+    const { nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, senha } = req.body;
 
-    if (!nome || !email || !rg || !senha) {
+    if (!nome || !email || !cpf || !rg || !telefone || !senha) {
         return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
     }
     if (senha.length < 6) {
@@ -64,22 +65,37 @@ app.post("/cadastro/aluno", (req, res) => {
         if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
         if (resultado.length > 0) return res.status(400).json({ mensagem: "Este email já está cadastrado." });
 
-        // Verifica RG duplicado
-        conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+        // Verifica CPF duplicado
+        conexao.query(`SELECT id FROM usuarios WHERE cpf = ?`, [cpf], (erro, resultado) => {
             if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
-            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
+            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este CPF já está cadastrado." });
 
-            const sqlInsere = `
-                INSERT INTO usuarios (nome, email, rg, senha, tipo, nivel, pontos, progresso, condicao, nivelAutismo)
-                VALUES (?, ?, ?, ?, 'aluno', 1, 0, 0, 'Nenhuma', 0)
-            `;
+            // Verifica RG duplicado
+            conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+                if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+                if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
 
-            conexao.query(sqlInsere, [nome, email, rg, senha], (erro, resultado) => {
-                if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
-                res.json({
-                    mensagem: "Conta criada com sucesso!",
-                    usuario:  { id: resultado.insertId, nome, email, rg, tipo: "aluno" }
-                });
+                const sqlInsere = `
+                    INSERT INTO usuarios 
+                    (nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, 
+                     senha, tipo, nivel, pontos, progresso, condicao)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'aluno', 1, 0, 0, 'Nenhuma')
+                `;
+
+                conexao.query(
+                    sqlInsere,
+                    [nome, email, cpf, rg, telefone, serie || 'Sem informação', tipoEscola || 'Não informado', nivelAutismo || 0, senha],
+                    (erro, resultado) => {
+                        if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
+                        res.json({
+                            mensagem: "Conta criada com sucesso!",
+                            usuario: {
+                                id: resultado.insertId,
+                                nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, tipo: "aluno"
+                            }
+                        });
+                    }
+                );
             });
         });
     });
@@ -90,12 +106,12 @@ app.post("/cadastro/aluno", (req, res) => {
 // professor / responsavel / coordenador / apoio
 // ════════════════════════════════════════════════
 app.post("/cadastro/institucional", (req, res) => {
-    const { nome, email, rg, senha, tipo } = req.body;
+    const { nome, email, cpf, rg, telefone, disciplina, tipoEscola, tipo, senha } = req.body;
 
     const tiposPermitidos = ["professor", "responsavel", "coordenador", "apoio"];
 
-    if (!nome || !email || !rg || !senha || !tipo) {
-        return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+    if (!nome || !email || !cpf || !rg || !telefone || !tipo || !senha) {
+        return res.status(400).json({ mensagem: "Todos os campos obrigatórios não foram preenchidos." });
     }
     if (!tiposPermitidos.includes(tipo)) {
         return res.status(400).json({ mensagem: "Tipo de acesso inválido." });
@@ -103,23 +119,41 @@ app.post("/cadastro/institucional", (req, res) => {
     if (senha.length < 6) {
         return res.status(400).json({ mensagem: "A senha deve ter pelo menos 6 caracteres." });
     }
+    if ((tipo === "professor" || tipo === "apoio") && !disciplina) {
+        return res.status(400).json({ mensagem: "Disciplina é obrigatória para professores." });
+    }
 
     conexao.query(`SELECT id FROM usuarios WHERE email = ?`, [email], (erro, resultado) => {
         if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
         if (resultado.length > 0) return res.status(400).json({ mensagem: "Este email já está cadastrado." });
 
-        conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+        conexao.query(`SELECT id FROM usuarios WHERE cpf = ?`, [cpf], (erro, resultado) => {
             if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
-            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
+            if (resultado.length > 0) return res.status(400).json({ mensagem: "Este CPF já está cadastrado." });
 
-            const sqlInsere = `INSERT INTO usuarios (nome, email, rg, senha, tipo) VALUES (?, ?, ?, ?, ?)`;
+            conexao.query(`SELECT id FROM usuarios WHERE rg = ?`, [rg], (erro, resultado) => {
+                if (erro) return res.status(500).json({ mensagem: "Erro no servidor." });
+                if (resultado.length > 0) return res.status(400).json({ mensagem: "Este RG já está cadastrado." });
 
-            conexao.query(sqlInsere, [nome, email, rg, senha, tipo], (erro, resultado) => {
-                if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
-                res.json({
-                    mensagem: "Cadastro realizado com sucesso!",
-                    usuario:  { id: resultado.insertId, nome, email, rg, tipo }
-                });
+                const sqlInsere = `
+                    INSERT INTO usuarios 
+                    (nome, email, cpf, rg, telefone, disciplina, tipoEscola, tipo, senha)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `;
+
+                conexao.query(
+                    sqlInsere,
+                    [nome, email, cpf, rg, telefone, disciplina || null, tipoEscola || 'Não informado', tipo, senha],
+                    (erro, resultado) => {
+                        if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
+                        res.json({
+                            mensagem: "Cadastro realizado com sucesso!",
+                            usuario: {
+                                id: resultado.insertId, nome, email, cpf, rg, telefone, disciplina, tipoEscola, tipo
+                            }
+                        });
+                    }
+                );
             });
         });
     });
@@ -151,7 +185,8 @@ app.get("/aluno/:id", (req, res) => {
     const { id } = req.params;
 
     const sql = `
-        SELECT id, nome, email, rg, tipo, nivel, pontos, progresso, condicao, nivelAutismo
+        SELECT id, nome, email, cpf, rg, telefone, serie, tipo, nivel, pontos, 
+               progresso, condicao, tipoEscola, nivelAutismo
         FROM usuarios
         WHERE id = ? AND tipo = 'aluno'
     `;
@@ -170,8 +205,8 @@ app.get("/alunos/:professorId", (req, res) => {
     const { professorId } = req.params;
 
     const sql = `
-        SELECT u.id, u.nome, u.email, u.rg, u.tipo, u.nivel, u.pontos,
-               u.progresso, u.condicao, u.nivelAutismo
+        SELECT u.id, u.nome, u.email, u.cpf, u.rg, u.telefone, u.serie, u.tipo, 
+               u.nivel, u.pontos, u.progresso, u.condicao, u.tipoEscola, u.nivelAutismo
         FROM usuarios u
         INNER JOIN professor_aluno pa ON u.id = pa.aluno_id
         WHERE pa.professor_id = ? AND u.tipo = 'aluno'
@@ -277,13 +312,14 @@ app.get("/escola/turmas", (req, res) => {
     const sql = `
         SELECT
             u.nome AS professor,
-            COUNT(pa.aluno_id)  AS totalAlunos,
-            AVG(al.progresso)   AS progressoMedio
+            u.disciplina,
+            COUNT(pa.aluno_id) AS totalAlunos,
+            AVG(al.progresso)  AS progressoMedio
         FROM usuarios u
         LEFT JOIN professor_aluno pa ON u.id = pa.professor_id
         LEFT JOIN usuarios al        ON pa.aluno_id = al.id
         WHERE u.tipo IN ('professor', 'coordenador', 'apoio')
-        GROUP BY u.id, u.nome
+        GROUP BY u.id, u.nome, u.disciplina
         ORDER BY totalAlunos DESC
     `;
 

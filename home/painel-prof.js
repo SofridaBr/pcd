@@ -1,24 +1,14 @@
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
 // ── VERIFICAÇÃO DE PERMISSÃO ──
-// Apenas professor, coordenador e apoio podem acessar esta página.
-// Aluno e responsável são bloqueados.
 const tiposPermitidosProf = ["professor", "coordenador", "apoio"];
 
 if (!usuario) {
     window.location.href = "index.html";
 } else if (usuario.tipo === "aluno") {
-    // Aluno tenta acessar o painel do professor
-    localStorage.setItem("_acesso_negado",
-        JSON.stringify({
-            motivo: `Sua conta é de aluno. Esta área é exclusiva para educadores.`,
-            destino: "painel.html",
-            label:   "Ir para meu painel de aluno"
-        })
-    );
-    window.location.href = "acesso-negado.html";
+    alert("Sua conta é de aluno. Esta área é exclusiva para educadores.");
+    window.location.href = "painel.html";
 } else if (usuario.tipo === "responsavel") {
-    // Responsável redireciona para o painel correto
     window.location.href = "painel-responsavel.html";
 } else if (!tiposPermitidosProf.includes(usuario.tipo)) {
     window.location.href = "index.html";
@@ -69,15 +59,29 @@ async function carregarAlunos() {
 
 function usarDadosDemo() {
     const demo = [
-        { id: 1, nome: "Ana Paula",    email: "ana@escola.com",   condicao: "Visual",    nivel: 3, pontos: 320, progresso: 65 },
-        { id: 2, nome: "Carlos Souza", email: "carlos@escola.com", condicao: "Cognitiva", nivel: 2, pontos: 180, progresso: 38 },
-        { id: 3, nome: "Bruna Melo",   email: "bruna@escola.com",  condicao: "Auditiva",  nivel: 4, pontos: 510, progresso: 72 }
+        {
+            id: 1, nome: "Ana Paula", email: "ana@escola.com", cpf: "12345678901", 
+            rg: "1234567", telefone: "11999999999", serie: "5º Fundamental", 
+            tipoEscola: "Regular", condicao: "Visual", nivelAutismo: 0,
+            nivel: 3, pontos: 320, progresso: 65
+        },
+        {
+            id: 2, nome: "Carlos Souza", email: "carlos@escola.com", cpf: "98765432109",
+            rg: "7654321", telefone: "11888888888", serie: "7º Fundamental",
+            tipoEscola: "Integral", condicao: "Cognitiva", nivelAutismo: 1,
+            nivel: 2, pontos: 180, progresso: 38
+        },
+        {
+            id: 3, nome: "Bruna Melo", email: "bruna@escola.com", cpf: "11122233344",
+            rg: "5555555", telefone: "11777777777", serie: "1º Médio",
+            tipoEscola: "Regular", condicao: "Auditiva", nivelAutismo: 0,
+            nivel: 4, pontos: 510, progresso: 72
+        }
     ];
     todosAlunos = demo;
     renderizarCards(demo);
     atualizarStats(demo);
 
-    // Avisa que é modo demo
     const container = document.getElementById("cards-container");
     const aviso = document.createElement("div");
     aviso.style.cssText = "grid-column:1/-1;background:#FFF9C4;border-radius:12px;padding:12px 16px;color:#F57F17;font-weight:700;font-size:13px;margin-bottom:8px;";
@@ -105,6 +109,20 @@ function renderizarCards(alunos) {
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const progresso  = aluno.progresso || 0;
 
+        // Novos campos
+        const cpf        = aluno.cpf || "—";
+        const rg         = aluno.rg || "—";
+        const telefone   = aluno.telefone || "—";
+        const serie      = aluno.serie || "Não informado";
+        const tipoEscola = aluno.tipoEscola || "Não informado";
+        const nivelAutismo = aluno.nivelAutismo || 0;
+
+        const nivelAutismoTexto = {
+            0: "Sem TEA",
+            1: "Leve",
+            2: "Moderado"
+        }[nivelAutismo] || "Não informado";
+
         return `
         <div class="aluno-card">
             <div class="card-top">
@@ -118,6 +136,36 @@ function renderizarCards(alunos) {
             <span class="badge ${badgeClass}">
                 ${iconeCondicao(condicao)} ${condicao}
             </span>
+
+            <!-- Novos dados do aluno -->
+            <div style="background:#F8FBFF;border-radius:12px;padding:12px;margin-bottom:14px;font-size:12px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">CPF</strong>
+                        <span style="color:#546E7A;">${cpf}</span>
+                    </div>
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">RG</strong>
+                        <span style="color:#546E7A;">${rg}</span>
+                    </div>
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">Telefone</strong>
+                        <span style="color:#546E7A;">${telefone}</span>
+                    </div>
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">Série</strong>
+                        <span style="color:#546E7A;">${serie}</span>
+                    </div>
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">Tipo Escola</strong>
+                        <span style="color:#546E7A;">${tipoEscola}</span>
+                    </div>
+                    <div>
+                        <strong style="color:#1565C0;display:block;font-size:11px;margin-bottom:2px;">Autismo</strong>
+                        <span style="color:#546E7A;">${nivelAutismoTexto}</span>
+                    </div>
+                </div>
+            </div>
 
             <div class="progress-label">
                 <span>Progresso</span>

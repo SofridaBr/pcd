@@ -210,7 +210,7 @@
     .modal-overlay.active { display: flex; }
     .modal-box {
       background: #fff; border-radius: 24px;
-      padding: 32px; width: 100%; max-width: 460px;
+      padding: 32px; width: 100%; max-width: 500px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       max-height: 90vh; overflow-y: auto;
     }
@@ -239,6 +239,7 @@
       .left { padding: 32px 24px; }
       .right { border-radius: 28px 28px 0 0; padding: 32px 24px; }
       .headline { font-size: 28px; }
+      .modal-box { max-width: 90%; }
     }
   </style>
 </head>
@@ -463,11 +464,68 @@
         </div>
 
         <div>
-          <label class="label" for="ca-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> Número do RG</label>
+          <label class="label" for="ca-cpf"><i class="ti ti-id-badge" style="color:#0288D1"></i> CPF</label>
           <div class="input-wrap">
             <i class="ti ti-id-badge field-icon"></i>
-            <input class="ei-input" id="ca-rg" type="text" placeholder="00.000.000-0" maxlength="15" />
+            <input class="ei-input" id="ca-cpf" type="text" placeholder="000.000.000-00" maxlength="40" oninput="apenasNumeros(this)" />
           </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> RG</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge field-icon"></i>
+            <input class="ei-input" id="ca-rg" type="text" placeholder="00.000.000-0" maxlength="40" oninput="apenasNumeros(this)" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-telefone"><i class="ti ti-phone" style="color:#F57F17"></i> Telefone</label>
+          <div class="input-wrap">
+            <i class="ti ti-phone field-icon"></i>
+            <input class="ei-input" id="ca-telefone" type="tel" placeholder="(11) 99999-9999" maxlength="40" oninput="apenasNumeros(this)" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ca-serie"><i class="ti ti-book" style="color:#2E7D32"></i> Série/Ano</label>
+          <div class="input-wrap">
+            <i class="ti ti-book field-icon"></i>
+            <select class="ei-select" id="ca-serie">
+              <option value="Sem informação">Selecione uma série</option>
+              <option value="1º Fundamental">1º Ano do Ensino Fundamental</option>
+              <option value="2º Fundamental">2º Ano do Ensino Fundamental</option>
+              <option value="3º Fundamental">3º Ano do Ensino Fundamental</option>
+              <option value="4º Fundamental">4º Ano do Ensino Fundamental</option>
+              <option value="5º Fundamental">5º Ano do Ensino Fundamental</option>
+              <option value="6º Fundamental">6º Ano do Ensino Fundamental</option>
+              <option value="7º Fundamental">7º Ano do Ensino Fundamental</option>
+              <option value="8º Fundamental">8º Ano do Ensino Fundamental</option>
+              <option value="9º Fundamental">9º Ano do Ensino Fundamental</option>
+              <option value="1º Médio">1º Ano do Ensino Médio</option>
+              <option value="2º Médio">2º Ano do Ensino Médio</option>
+              <option value="3º Médio">3º Ano do Ensino Médio</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="label"><i class="ti ti-building" style="color:#6A1B9A"></i> Tipo de Escola</label>
+          <div class="pcd-row" role="group">
+            <button type="button" class="pcd-chip chip-green" onclick="toggleEscola(this, 'Regular')">📚 Regular</button>
+            <button type="button" class="pcd-chip chip-purple" onclick="toggleEscola(this, 'Integral')">🏢 Integral</button>
+          </div>
+          <input type="hidden" id="ca-tipo-escola" value="Não informado" />
+        </div>
+
+        <div>
+          <label class="label"><i class="ti ti-brain" style="color:#4A148C"></i> Nível de Autismo</label>
+          <div class="pcd-row" role="group">
+            <button type="button" class="pcd-chip chip-green" onclick="toggleAutismo(this, 0)">✅ Sem TEA</button>
+            <button type="button" class="pcd-chip chip-brown" onclick="toggleAutismo(this, 1)">🟡 Leve</button>
+            <button type="button" class="pcd-chip chip-red" onclick="toggleAutismo(this, 2)">🔴 Moderado</button>
+          </div>
+          <input type="hidden" id="ca-nivel-autismo" value="0" />
         </div>
 
         <div>
@@ -539,11 +597,44 @@
         </div>
 
         <div>
-          <label class="label" for="ci-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> Número do RG</label>
+          <label class="label" for="ci-cpf"><i class="ti ti-id-badge" style="color:#0288D1"></i> CPF</label>
           <div class="input-wrap">
             <i class="ti ti-id-badge field-icon"></i>
-            <input class="ei-input" id="ci-rg" type="text" placeholder="00.000.000-0" maxlength="15" />
+            <input class="ei-input" id="ci-cpf" type="text" placeholder="000.000.000-00" maxlength="40" oninput="apenasNumeros(this)" />
           </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-rg"><i class="ti ti-id-badge" style="color:#6A1B9A"></i> RG</label>
+          <div class="input-wrap">
+            <i class="ti ti-id-badge field-icon"></i>
+            <input class="ei-input" id="ci-rg" type="text" placeholder="00.000.000-0" maxlength="40" oninput="apenasNumeros(this)" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="ci-telefone"><i class="ti ti-phone" style="color:#F57F17"></i> Telefone</label>
+          <div class="input-wrap">
+            <i class="ti ti-phone field-icon"></i>
+            <input class="ei-input" id="ci-telefone" type="tel" placeholder="(11) 99999-9999" maxlength="40" oninput="apenasNumeros(this)" />
+          </div>
+        </div>
+
+        <div id="disciplina-container" style="display: none;">
+          <label class="label" for="ci-disciplina"><i class="ti ti-book" style="color:#2E7D32"></i> Disciplina/Aula</label>
+          <div class="input-wrap">
+            <i class="ti ti-book field-icon"></i>
+            <input class="ei-input" id="ci-disciplina" type="text" placeholder="Ex: Matemática, Português, etc" />
+          </div>
+        </div>
+
+        <div>
+          <label class="label"><i class="ti ti-building" style="color:#6A1B9A"></i> Tipo de Escola (Opcional)</label>
+          <div class="pcd-row" role="group">
+            <button type="button" class="pcd-chip chip-green" onclick="toggleEscolaInst(this, 'Regular')">📚 Regular</button>
+            <button type="button" class="pcd-chip chip-purple" onclick="toggleEscolaInst(this, 'Integral')">🏢 Integral</button>
+          </div>
+          <input type="hidden" id="ci-tipo-escola" value="Não informado" />
         </div>
 
         <div>
