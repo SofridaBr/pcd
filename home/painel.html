@@ -67,13 +67,6 @@
         .card-valor { font-family:'Fredoka One',cursive;color:#1565C0;font-size:28px; }
         .card-label { color:#90A4AE;font-size:12px;font-weight:600;margin-top:4px; }
 
-        .dicas-box { background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 16px rgba(21,101,192,0.07);border:2px solid #E3F2FD; }
-        .dica-item { display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #F0F6FF; }
-        .dica-item:last-child { border-bottom:none; }
-        .dica-icon { width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
-        .dica-texto strong { display:block;color:#1565C0;font-size:14px;margin-bottom:2px; }
-        .dica-texto span { color:#90A4AE;font-size:13px; }
-
         @media (max-width:768px) {
             .hero { margin:16px;flex-direction:column; }
             .hero-stats { flex-wrap:wrap; }
@@ -112,29 +105,40 @@
 <script>
     const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
 
-    // ── VERIFICAÇÃO DE PERMISSÃO ──
     if (!usuarioLocal) {
         window.location.href = "index.html";
     } else if (usuarioLocal.tipo !== "aluno") {
-        const nomesTipo = {
-            professor:   "Professor(a)",
-            responsavel: "Responsável / Familiar",
-            coordenador: "Coordenador(a)",
-            apoio:       "Apoio / Cuidador"
-        };
-        alert(`Sua conta é do tipo "${nomesTipo[usuarioLocal.tipo] || usuarioLocal.tipo}". Esta área é exclusiva para alunos.`);
+        alert("Esta área é exclusiva para alunos.");
         window.location.href = "index.html";
     }
 
-    // Configurações visuais por condição
+    // ✅ Mapeamento de condição → classe CSS e ícone
     const condicaoConfig = {
-        "Nenhuma":   { cls:"cond-nenhuma",  icon:"✅", avatar:"🧒" },
-        "Visual":    { cls:"cond-visual",   icon:"👁️", avatar:"🧒" },
-        "Auditiva":  { cls:"cond-auditiva", icon:"👂", avatar:"🧒" },
-        "Cognitiva": { cls:"cond-cognitiva", icon:"🧠", avatar:"🧒" },
-        "Física":    { cls:"cond-fisica",   icon:"♿", avatar:"🧒" },
-        "Outro":     { cls:"cond-outro",    icon:"⭐", avatar:"🧒" }
+        "Nenhuma":   { cls: "cond-nenhuma",   icon: "✅" },
+        "Visual":    { cls: "cond-visual",    icon: "👁️" },
+        "Auditiva":  { cls: "cond-auditiva",  icon: "👂" },
+        "Cognitiva": { cls: "cond-cognitiva", icon: "🧠" },
+        "Física":    { cls: "cond-fisica",    icon: "♿" },
+        "Fisica":    { cls: "cond-fisica",    icon: "♿" }, // fallback sem acento
+        "Outro":     { cls: "cond-outro",     icon: "⭐" }
     };
+
+    // ✅ Normaliza string para comparação (remove acentos, lowercase)
+    function normalizar(str) {
+        return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // ✅ Encontra config de condição de forma tolerante a acentos
+    function getCondicaoConfig(condicao) {
+        // Tenta match direto primeiro
+        if (condicaoConfig[condicao]) return condicaoConfig[condicao];
+        // Tenta match normalizado
+        const norm = normalizar(condicao);
+        for (const [key, val] of Object.entries(condicaoConfig)) {
+            if (normalizar(key) === norm) return val;
+        }
+        return { cls: "cond-nenhuma", icon: "✅" };
+    }
 
     async function carregarDadosAluno() {
         try {
@@ -142,68 +146,61 @@
             const dados = await res.json();
 
             if (!res.ok) {
+                // Servidor offline — usa dados do localStorage
                 renderizarPainel(usuarioLocal);
                 return;
             }
 
-            const aluno = {
-                ...dados.aluno,
-                condicao: usuarioLocal.condicao || dados.aluno.condicao || "Nenhuma"
-            };
-            localStorage.setItem("usuario", JSON.stringify({ ...usuarioLocal, ...aluno }));
+            // ✅ Prioridade: dado do BANCO (mais atualizado) sobre o localStorage
+            const aluno = { ...usuarioLocal, ...dados.aluno };
+            localStorage.setItem("usuario", JSON.stringify(aluno));
             renderizarPainel(aluno);
 
         } catch {
-            if (usuarioLocal.nome) {
-                renderizarPainel(usuarioLocal);
-            } else {
-                document.getElementById("conteudo-principal").innerHTML = `<div style="color:#C62828;font-weight:700;text-align:center;padding:60px">Erro ao carregar dados. Faça login novamente.</div>`;
-            }
+            // Sem conexão — usa localStorage
+            renderizarPainel(usuarioLocal);
         }
     }
 
     function renderizarPainel(aluno) {
-        const condicao  = aluno.condicao  || "Nenhuma";
-        const nivel     = aluno.nivel     || 1;
-        const pontos    = aluno.pontos    || 0;
-        const progresso = aluno.progresso || 0;
-        
-        // Novos campos
-        const cpf       = aluno.cpf       || "Não informado";
-        const rg        = aluno.rg        || "Não informado";
-        const telefone  = aluno.telefone  || "Não informado";
-        const serie     = aluno.serie     || "Não informado";
-        const tipoEscola = aluno.tipoEscola || "Não informado";
-        const nivelAutismo = aluno.nivelAutismo || 0;
-        
-        const email     = aluno.email     || usuarioLocal.email || "—";
-        const nome      = aluno.nome      || usuarioLocal.nome  || "Aluno";
+        // ✅ Lê condicao diretamente do objeto (vem do banco via server.js)
+        const condicao     = aluno.condicao    || "Nenhuma";
+        const nivel        = aluno.nivel       || 1;
+        const pontos       = aluno.pontos      || 0;
+        const progresso    = aluno.progresso   || 0;
+        const cpf          = aluno.cpf         || "Não informado";
+        const rg           = aluno.rg          || "Não informado";
+        const telefone     = aluno.telefone    || "Não informado";
+        const serie        = aluno.serie       || "Não informado";
+        const tipoEscola   = aluno.tipoEscola  || "Não informado";
+        const nivelAutismo = aluno.nivelAutismo ?? 0;
+        const email        = aluno.email       || "—";
+        const nome         = aluno.nome        || "Aluno";
 
-        // Normaliza chave de condição
-        const cfgKey = Object.keys(condicaoConfig).find(k =>
-            k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") ===
-            condicao.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-        ) || "Nenhuma";
-        const cfg = condicaoConfig[cfgKey];
+        const cfg = getCondicaoConfig(condicao);
 
-        // Hero
+        // ── Hero ──
         document.getElementById("hero-nome").textContent = "Olá, " + nome + "! 👋";
-        document.getElementById("hero-avatar").textContent = cfg.avatar;
+        document.getElementById("hero-avatar").textContent = "🧒";
+
         const condEl = document.getElementById("hero-condicao");
+        // ✅ Exibe o ícone + nome da condição que veio do banco
         condEl.textContent = cfg.icon + " " + condicao;
         condEl.className   = "hero-condicao " + cfg.cls;
+
         document.getElementById("stat-nivel").textContent    = "⭐ " + nivel;
         document.getElementById("stat-pontos").textContent   = "🏆 " + pontos;
         document.getElementById("stat-progresso").textContent = progresso + "%";
 
-        // Descrição do nível de autismo
+        // ── Autismo ──
         const autismoDesc = {
-            0: { titulo: "Sem diagnóstico TEA", texto: "Não há indicação de Transtorno do Espectro Autista." },
-            1: { titulo: "Nível 1 – Suporte Leve", texto: "Suporte leve com algumas dificuldades de comunicação." },
+            0: { titulo: "Sem diagnóstico TEA",        texto: "Não há indicação de Transtorno do Espectro Autista." },
+            1: { titulo: "Nível 1 – Suporte Leve",     texto: "Suporte leve com algumas dificuldades de comunicação." },
             2: { titulo: "Nível 2 – Suporte Moderado", texto: "Suporte moderado com dificuldades marcantes." }
         };
         const descAutismo = autismoDesc[nivelAutismo] || autismoDesc[0];
 
+        // ── Conteúdo principal ──
         document.getElementById("conteudo-principal").innerHTML = `
             <div class="section-title">
                 <i class="ti ti-id-badge" style="color:#1565C0"></i> Meus Dados Pessoais
@@ -212,59 +209,36 @@
             <div class="dados-card">
                 <div class="dado-row">
                     <div class="dado-icon">👤</div>
-                    <div class="dado-info">
-                        <strong>Nome completo</strong>
-                        <span>${nome}</span>
-                    </div>
+                    <div class="dado-info"><strong>Nome completo</strong><span>${nome}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">📧</div>
-                    <div class="dado-info">
-                        <strong>E-mail</strong>
-                        <span>${email}</span>
-                    </div>
+                    <div class="dado-info"><strong>E-mail</strong><span>${email}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">🪪</div>
-                    <div class="dado-info">
-                        <strong>CPF</strong>
-                        <span>${cpf}</span>
-                    </div>
+                    <div class="dado-info"><strong>CPF</strong><span>${cpf}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">📋</div>
-                    <div class="dado-info">
-                        <strong>RG</strong>
-                        <span>${rg}</span>
-                    </div>
+                    <div class="dado-info"><strong>RG</strong><span>${rg}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">📱</div>
-                    <div class="dado-info">
-                        <strong>Telefone</strong>
-                        <span>${telefone}</span>
-                    </div>
+                    <div class="dado-info"><strong>Telefone</strong><span>${telefone}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">📚</div>
-                    <div class="dado-info">
-                        <strong>Série/Ano</strong>
-                        <span>${serie}</span>
-                    </div>
+                    <div class="dado-info"><strong>Série/Ano</strong><span>${serie}</span></div>
                 </div>
                 <div class="dado-row">
                     <div class="dado-icon">🏫</div>
-                    <div class="dado-info">
-                        <strong>Tipo de Escola</strong>
-                        <span>${tipoEscola}</span>
-                    </div>
+                    <div class="dado-info"><strong>Tipo de Escola</strong><span>${tipoEscola}</span></div>
                 </div>
+                <!-- ✅ Tipo de necessidade exibido aqui -->
                 <div class="dado-row">
                     <div class="dado-icon">${cfg.icon}</div>
-                    <div class="dado-info">
-                        <strong>Necessidade Especial</strong>
-                        <span>${condicao}</span>
-                    </div>
+                    <div class="dado-info"><strong>Tipo de Necessidade</strong><span>${condicao}</span></div>
                 </div>
             </div>
 
@@ -301,15 +275,16 @@
                     <div class="card-valor">${progresso}%</div>
                     <div class="card-label">Progresso</div>
                 </div>
+                <!-- ✅ Card de condição/necessidade -->
                 <div class="info-card">
-                    <div class="card-icon">🧩</div>
-                    <div class="card-valor" style="font-size:16px">${descAutismo.titulo.split('–')[0].trim()}</div>
-                    <div class="card-label">Autismo</div>
+                    <div class="card-icon">${cfg.icon}</div>
+                    <div class="card-valor" style="font-size:15px;line-height:1.2">${condicao}</div>
+                    <div class="card-label">Necessidade</div>
                 </div>
             </div>
 
             <div class="section-title">
-                <i class="ti ti-brain" style="color:#6A1B9A"></i> Nível de Suporte
+                <i class="ti ti-brain" style="color:#6A1B9A"></i> Nível de Suporte (Autismo)
             </div>
 
             <div class="dados-card">
@@ -331,9 +306,7 @@
         window.location.href = "index.html";
     }
 
-    if (usuarioLocal && usuarioLocal.tipo === "aluno") {
-        carregarDadosAluno();
-    }
+    carregarDadosAluno();
 </script>
 </body>
 </html>

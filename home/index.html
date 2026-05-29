@@ -324,18 +324,7 @@
             </div>
           </div>
 
-          <div>
-            <div class="label">
-              <i class="ti ti-accessibility" style="color:#6A1B9A"></i> Tipo de necessidade
-            </div>
-            <div class="pcd-row" role="group">
-              <button type="button" class="pcd-chip chip-red"    onclick="toggleChip(this)">Visual</button>
-              <button type="button" class="pcd-chip chip-green"  onclick="toggleChip(this)">Auditiva</button>
-              <button type="button" class="pcd-chip chip-purple" onclick="toggleChip(this)">Cognitiva</button>
-              <button type="button" class="pcd-chip chip-brown"  onclick="toggleChip(this)">Física</button>
-              <button type="button" class="pcd-chip chip-pink"   onclick="toggleChip(this)">Outro</button>
-            </div>
-          </div>
+          <!-- ✅ "Tipo de necessidade" REMOVIDO daqui — agora está no modal de cadastro -->
 
           <button type="submit" class="btn-primary">
             <i class="ti ti-login"></i> Entrar e aprender!
@@ -526,6 +515,19 @@
             <button type="button" class="pcd-chip chip-red" onclick="toggleAutismo(this, 2)">🔴 Moderado</button>
           </div>
           <input type="hidden" id="ca-nivel-autismo" value="0" />
+        </div>
+
+        <!-- ✅ "Tipo de necessidade" ADICIONADO AQUI no cadastro, junto com Tipo de Escola e Nível de Autismo -->
+        <div>
+          <label class="label"><i class="ti ti-accessibility" style="color:#6A1B9A"></i> Tipo de necessidade</label>
+          <div class="pcd-row" role="group">
+            <button type="button" class="pcd-chip chip-red"    onclick="toggleNecessidade(this, 'Visual')">Visual</button>
+            <button type="button" class="pcd-chip chip-green"  onclick="toggleNecessidade(this, 'Auditiva')">Auditiva</button>
+            <button type="button" class="pcd-chip chip-purple" onclick="toggleNecessidade(this, 'Cognitiva')">Cognitiva</button>
+            <button type="button" class="pcd-chip chip-brown"  onclick="toggleNecessidade(this, 'Física')">Física</button>
+            <button type="button" class="pcd-chip chip-pink"   onclick="toggleNecessidade(this, 'Outro')">Outro</button>
+          </div>
+          <input type="hidden" id="ca-condicao" value="Nenhuma" />
         </div>
 
         <div>

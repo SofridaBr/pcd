@@ -31,16 +31,14 @@ function toggleTDAH() { document.body.classList.toggle("tdah-mode"); }
 // FORMATADORES (substituem o oninput="apenasNumeros")
 // ═══════════════════════════════════════════════════════
 
-// Não é mais usado diretamente, mas mantido para compatibilidade
 function apenasNumeros(input) {
     input.value = input.value.replace(/\D/g, '');
 }
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ── CPF: 000.000.000-00 (máx 14 chars formatados / 11 dígitos) ──
+    // ── CPF: 000.000.000-00 ──
     document.querySelectorAll('input[id$="-cpf"]').forEach(input => {
-        // Remove o oninput nativo para evitar conflito
         input.removeAttribute('oninput');
         input.addEventListener('input', function () {
             let d = this.value.replace(/\D/g, '').slice(0, 11);
@@ -51,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ── RG: 00.000.000-0 (máx 10 chars formatados / 9 dígitos) ──
+    // ── RG: 00.000.000-0 ──
     document.querySelectorAll('input[id$="-rg"]').forEach(input => {
         input.removeAttribute('oninput');
         input.addEventListener('input', function () {
@@ -63,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ── Telefone: (11) 99999-9999 ou (11) 9999-9999 ──
+    // ── Telefone: (11) 99999-9999 ──
     document.querySelectorAll('input[type="tel"]').forEach(input => {
         input.removeAttribute('oninput');
         input.addEventListener('input', function () {
@@ -102,13 +100,14 @@ function switchTab(tab) {
     if (anterior) anterior.remove();
 }
 
+// ✅ Mantido apenas para compatibilidade — não é mais usado no login
 function toggleChip(el) {
     document.querySelectorAll(".pcd-chip").forEach(c => { if (c !== el) c.classList.remove("sel"); });
     el.classList.toggle("sel");
 }
 
 // ═══════════════════════════════════════════════════════
-// TOGGLE PARA NOVOS CAMPOS
+// TOGGLE PARA OS CAMPOS DO CADASTRO
 // ═══════════════════════════════════════════════════════
 
 function toggleEscola(el, valor) {
@@ -121,6 +120,13 @@ function toggleAutismo(el, nivel) {
     el.parentElement.querySelectorAll(".pcd-chip").forEach(c => c.classList.remove("sel"));
     el.classList.add("sel");
     document.getElementById("ca-nivel-autismo").value = nivel;
+}
+
+// ✅ NOVA FUNÇÃO — seleciona o tipo de necessidade no cadastro
+function toggleNecessidade(el, valor) {
+    el.parentElement.querySelectorAll(".pcd-chip").forEach(c => c.classList.remove("sel"));
+    el.classList.add("sel");
+    document.getElementById("ca-condicao").value = valor;
 }
 
 function toggleEscolaInst(el, valor) {
@@ -149,14 +155,13 @@ const redirecionaMap = {
 
 // ═══════════════════════════════════════════════════════
 // LOGIN ALUNO
+// ✅ Removida a leitura de condicao — agora vem do cadastro
 // ═══════════════════════════════════════════════════════
 document.getElementById("form-login-aluno").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email    = document.getElementById("aluno-email").value.trim();
-    const senha    = document.getElementById("aluno-senha").value;
-    const condicao = [...document.querySelectorAll(".pcd-chip.sel")]
-        .map(c => c.textContent.trim())[0] || "Nenhuma";
+    const email = document.getElementById("aluno-email").value.trim();
+    const senha = document.getElementById("aluno-senha").value;
 
     if (!email || !senha) { alert("Preencha e-mail e senha."); return; }
 
@@ -187,18 +192,8 @@ document.getElementById("form-login-aluno").addEventListener("submit", async (e)
             return;
         }
 
-        localStorage.setItem("usuario", JSON.stringify({ ...usuario, condicao }));
-
-        if (condicao !== "Nenhuma") {
-            try {
-                await fetch("http://localhost:3000/atualizar-condicao", {
-                    method:  "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body:    JSON.stringify({ id: usuario.id, condicao })
-                });
-            } catch (_) { }
-        }
-
+        // ✅ Salva o usuário com a condição que já veio do banco (definida no cadastro)
+        localStorage.setItem("usuario", JSON.stringify(usuario));
         window.location.href = "painel.html";
 
     } catch {
@@ -292,11 +287,21 @@ function mostrarAcessoNegado(mensagem) {
 function abrirModalCadastroAluno() {
     document.getElementById("modal-aluno").classList.add("active");
     document.getElementById("alerta-aluno").className = "modal-alert";
-    ["ca-nome", "ca-email", "ca-cpf", "ca-rg", "ca-telefone", "ca-serie", "ca-senha", "ca-senha2"].forEach(id => {
+
+    // Limpa todos os campos
+    ["ca-nome", "ca-email", "ca-cpf", "ca-rg", "ca-telefone", "ca-senha", "ca-senha2"].forEach(id => {
         document.getElementById(id).value = "";
     });
-    document.getElementById("ca-tipo-escola").value = "Não informado";
+
+    // Reseta selects
+    document.getElementById("ca-serie").selectedIndex = 0;
+
+    // Reseta campos hidden
+    document.getElementById("ca-tipo-escola").value  = "Não informado";
     document.getElementById("ca-nivel-autismo").value = "0";
+    document.getElementById("ca-condicao").value      = "Nenhuma"; // ✅ reseta tipo de necessidade
+
+    // Remove seleção de todos os chips do modal
     document.querySelectorAll("#modal-aluno .pcd-chip").forEach(c => c.classList.remove("sel"));
 }
 
@@ -317,6 +322,7 @@ async function cadastrarAluno() {
     const serie        = document.getElementById("ca-serie").value;
     const tipoEscola   = document.getElementById("ca-tipo-escola").value;
     const nivelAutismo = document.getElementById("ca-nivel-autismo").value;
+    const condicao     = document.getElementById("ca-condicao").value; // ✅ lê o tipo de necessidade
     const senha        = document.getElementById("ca-senha").value;
     const senha2       = document.getElementById("ca-senha2").value;
 
@@ -349,12 +355,20 @@ async function cadastrarAluno() {
     }
 
     try {
-        const res   = await fetch("http://localhost:3000/cadastro/aluno", {
+        const res = await fetch("http://localhost:3000/cadastro/aluno", {
             method:  "POST",
             headers: { "Content-Type": "application/json" },
             body:    JSON.stringify({
-                nome, email, cpf: cpfNumeros, rg: rgNumeros, telefone: telNumeros,
-                serie, tipoEscola, nivelAutismo, senha
+                nome,
+                email,
+                cpf:          cpfNumeros,
+                rg:           rgNumeros,
+                telefone:     telNumeros,
+                serie,
+                tipoEscola,
+                nivelAutismo,
+                condicao,     // ✅ envia o tipo de necessidade escolhido
+                senha
             })
         });
         const dados = await res.json();
@@ -447,11 +461,14 @@ async function cadastrarInstitucional() {
     }
 
     try {
-        const res   = await fetch("http://localhost:3000/cadastro/institucional", {
+        const res = await fetch("http://localhost:3000/cadastro/institucional", {
             method:  "POST",
             headers: { "Content-Type": "application/json" },
             body:    JSON.stringify({
-                nome, email, cpf: cpfNumeros, rg: rgNumeros, telefone: telNumeros,
+                nome, email,
+                cpf:      cpfNumeros,
+                rg:       rgNumeros,
+                telefone: telNumeros,
                 disciplina, tipoEscola, tipo, senha
             })
         });

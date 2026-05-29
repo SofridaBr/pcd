@@ -49,9 +49,11 @@ app.post("/login", (req, res) => {
 
 // ════════════════════════════════════════════════
 // CADASTRO DE ALUNO (auto-registro)
+// ✅ Agora recebe e salva o campo "condicao" vindo do front
 // ════════════════════════════════════════════════
 app.post("/cadastro/aluno", (req, res) => {
-    const { nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, senha } = req.body;
+    // ✅ Desestrutura condicao junto com os demais campos
+    const { nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, condicao, senha } = req.body;
 
     if (!nome || !email || !cpf || !rg || !telefone || !senha) {
         return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
@@ -79,19 +81,33 @@ app.post("/cadastro/aluno", (req, res) => {
                     INSERT INTO usuarios 
                     (nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, 
                      senha, tipo, nivel, pontos, progresso, condicao)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'aluno', 1, 0, 0, 'Nenhuma')
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'aluno', 1, 0, 0, ?)
                 `;
 
                 conexao.query(
                     sqlInsere,
-                    [nome, email, cpf, rg, telefone, serie || 'Sem informação', tipoEscola || 'Não informado', nivelAutismo || 0, senha],
+                    [
+                        nome,
+                        email,
+                        cpf,
+                        rg,
+                        telefone,
+                        serie        || 'Sem informação',
+                        tipoEscola   || 'Não informado',
+                        nivelAutismo || 0,
+                        senha,
+                        condicao     || 'Nenhuma'   // ✅ salva a condição escolhida pelo aluno no cadastro
+                    ],
                     (erro, resultado) => {
                         if (erro) return res.status(500).json({ mensagem: "Erro ao criar conta." });
                         res.json({
                             mensagem: "Conta criada com sucesso!",
                             usuario: {
                                 id: resultado.insertId,
-                                nome, email, cpf, rg, telefone, serie, tipoEscola, nivelAutismo, tipo: "aluno"
+                                nome, email, cpf, rg, telefone,
+                                serie, tipoEscola, nivelAutismo,
+                                condicao: condicao || 'Nenhuma',
+                                tipo: "aluno"
                             }
                         });
                     }
@@ -294,11 +310,11 @@ app.get("/escola/stats", (req, res) => {
                 totalProfessores: resProfs[0].totalProfessores,
                 progressoMedio:   Math.round(resAlunos[0].progressoMedio || 0),
                 condicoes: {
-                    Visual:   resAlunos[0].visual,
-                    Auditiva: resAlunos[0].auditiva,
-                    Cognitiva:resAlunos[0].cognitiva,
-                    Fisica:   resAlunos[0].fisica,
-                    Nenhuma:  resAlunos[0].nenhuma
+                    Visual:    resAlunos[0].visual,
+                    Auditiva:  resAlunos[0].auditiva,
+                    Cognitiva: resAlunos[0].cognitiva,
+                    Fisica:    resAlunos[0].fisica,
+                    Nenhuma:   resAlunos[0].nenhuma
                 }
             });
         });
